@@ -7,8 +7,8 @@ const projects = [
     description: "Real-time CO₂ and energy tracking with data visualization and category-based analysis.",
     image: "/projects/SmartEnergy.jpg",
     tags: ["Next.js", "TailwindCSS", "MongoDB"],
-    demoUrl: "#",
-    githubUrl: "https://github.com/LuisIglesiass/SmartEnergy2",
+    demoUrl: "https://smart-energy-2e28tkmmo-luis-iglesias-projects.vercel.app",
+    githubUrl: "https://github.com/LuisIglesiass/SmartEnergy",
   },
   {
     id: 2,
@@ -17,7 +17,6 @@ const projects = [
       "Minimalist habit tracker with progress visualization and smart tracking features.",
     image: "/projects/HabitFlow.jpg",
     tags: ["React", "Tailwind", "Typescript"],
-    demoUrl: "#",
     githubUrl: "https://github.com/LuisIglesiass/habit-tracker",
   },
   {
@@ -27,7 +26,7 @@ const projects = [
       "Lightweight calculator designed for quick and easy calculations.",
     image: "/projects/CalculatorApp.jpg",
     tags: ["Javascript", "CSS", "HTML"],
-    demoUrl: "#",
+    demoUrl: "https://calculator-app-snowy-mu.vercel.app/",
     githubUrl: "https://github.com/LuisIglesiass/calculator-app",
   },
 ];
