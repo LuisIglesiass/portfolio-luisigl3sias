@@ -21,6 +21,16 @@ const projects = [
   },
   {
     id: 3,
+    title: "Movie Searcher",
+    description:
+      "Fast and minimal movie search tool using OMDb API and pure JavaScript.",
+    image: "/projects/MovieSearcher.jpg",
+    tags: ["Javascript", "CSS", "HTML"],
+    demoUrl: "https://findmyfilm-neon.vercel.app/",
+    githubUrl: "https://github.com/LuisIglesiass/movie-search-js",
+  },
+  {
+    id: 4,
     title: "Simple Calculator",
     description:
       "Lightweight calculator designed for quick and easy calculations.",
