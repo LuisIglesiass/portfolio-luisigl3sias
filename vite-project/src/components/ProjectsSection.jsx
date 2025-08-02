@@ -31,6 +31,16 @@ const projects = [
   },
   {
     id: 4,
+    title: "FocusList – React To-Do App",
+    description: 
+    "Clean to-do app for managing tasks with real-time stats and local storage.",
+    image: "/projects/FocusList.jpg",
+    tags: ["JavaScript", "React", "Vite", "CSS", "localStorage"],
+    demoUrl: "https://focuslist-drab.vercel.app/",
+    githubUrl: "https://github.com/LuisIglesiass/todo-app-react",
+  },
+  {
+    id: 5,
     title: "Simple Calculator",
     description:
       "Lightweight calculator designed for quick and easy calculations.",
