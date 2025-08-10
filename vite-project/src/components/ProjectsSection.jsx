@@ -12,6 +12,16 @@ const projects = [
   },
   {
     id: 2,
+    title: "Tailwind UI Kit",
+    description:
+      "A modern, responsive UI components library built with Tailwind CSS and React, featuring clean design, ready-to-use components, and easy customization.",
+    image: "/projects/MyUiKit.jpg",
+    tags: ["React", "Tailwind CSS", "Vite"],
+    demoUrl: "https://my-ui-kit-ten.vercel.app/",
+    githubUrl: "https://github.com/LuisIglesiass/tailwind-ui-kit",
+  },
+  {
+    id: 3,
     title: "HabitFlow",
     description:
       "Minimalist habit tracker with progress visualization and smart tracking features.",
