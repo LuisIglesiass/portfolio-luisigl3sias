@@ -1,8 +1,17 @@
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
 
 const projects = [
-  {
-    id: 1,
+    {
+      id: 1,
+      title: "Aesthetic Art Gallery",
+      description: "A minimalist digital art gallery built with Nuxt and GSAP, focused on refined typography, smooth scroll animations, and a calm, gallery-like visual experience.",
+      image: "/projects/AestheticArtGallery.jpg",
+      tags: ["Nuxt", "Vue", "GSAP", "ScrollTrigger", "UI/UX"],
+      demoUrl: "https://aesthetic-art-gallery.vercel.app/",
+      githubUrl: "https://github.com/LuisIglesiass/aesthetic-art-gallery",
+    },
+    {
+    id: 2,
     title: "Smart Energy",
     description: "Real-time CO₂ and energy tracking with data visualization and category-based analysis.",
     image: "/projects/SmartEnergy.jpg",
@@ -11,7 +20,7 @@ const projects = [
     githubUrl: "https://github.com/LuisIglesiass/SmartEnergy",
   },
   {
-    id: 2,
+    id: 3,
     title: "Tailwind UI Kit",
     description:
       "A modern, responsive UI components library built with Tailwind CSS and React, featuring clean design, ready-to-use components, and easy customization.",
@@ -21,7 +30,7 @@ const projects = [
     githubUrl: "https://github.com/LuisIglesiass/tailwind-ui-kit",
   },
   {
-    id: 3,
+    id: 4,
     title: "HabitFlow",
     description:
       "Minimalist habit tracker with progress visualization and smart tracking features.",
@@ -30,7 +39,7 @@ const projects = [
     githubUrl: "https://github.com/LuisIglesiass/habit-tracker",
   },
   {
-    id: 3,
+    id: 5,
     title: "Movie Searcher",
     description:
       "Fast and minimal movie search tool using OMDb API and pure JavaScript.",
@@ -40,7 +49,7 @@ const projects = [
     githubUrl: "https://github.com/LuisIglesiass/movie-search-js",
   },
   {
-    id: 4,
+    id: 6,
     title: "FocusList – React To-Do App",
     description: 
     "Clean to-do app for managing tasks with real-time stats and local storage.",
@@ -50,7 +59,7 @@ const projects = [
     githubUrl: "https://github.com/LuisIglesiass/todo-app-react",
   },
   {
-    id: 5,
+    id: 7,
     title: "Simple Calculator",
     description:
       "Lightweight calculator designed for quick and easy calculations.",
@@ -58,7 +67,7 @@ const projects = [
     tags: ["Javascript", "CSS", "HTML"],
     demoUrl: "https://calculator-app-snowy-mu.vercel.app/",
     githubUrl: "https://github.com/LuisIglesiass/calculator-app",
-  },
+  }
 ];
 
 export const ProjectsSection = () => {
