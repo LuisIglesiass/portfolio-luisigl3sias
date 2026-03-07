@@ -1,26 +1,38 @@
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
 
 const projects = [
-    {
-      id: 1,
-      title: "Aesthetic Art Gallery",
-      description: "A minimalist digital art gallery built with Nuxt and GSAP, focused on refined typography, smooth scroll animations, and a calm, gallery-like visual experience.",
-      image: "/projects/AestheticArtGallery.jpg",
-      tags: ["Nuxt", "Vue", "GSAP", "ScrollTrigger", "UI/UX"],
-      demoUrl: "https://aesthetic-art-gallery.vercel.app/",
-      githubUrl: "https://github.com/LuisIglesiass/aesthetic-art-gallery",
-    },
-    {
+  {
+    id: 1,
+    title: "Smart Budget Planner",
+    description:
+      "A personal finance web app focused on budget planning, expense tracking, and clearer money management through a clean, intuitive interface.",
+    image: "/projects/SmartBudgetPlanner.png",
+    tags: ["React", "Vite", "JavaScript", "Tailwind CSS"],
+    demoUrl: "https://smart-budget-planner-jet.vercel.app/",
+    githubUrl: "https://github.com/LuisIglesiass/smart-budget-planner",
+  },
+  {
     id: 2,
+    title: "Aesthetic Art Gallery",
+    description:
+      "A minimalist digital art gallery built with Nuxt and GSAP, focused on refined typography, smooth scroll animations, and a calm, gallery-like visual experience.",
+    image: "/projects/AestheticArtGallery.jpg",
+    tags: ["Nuxt", "Vue", "GSAP", "ScrollTrigger", "UI/UX"],
+    demoUrl: "https://aesthetic-art-gallery.vercel.app/",
+    githubUrl: "https://github.com/LuisIglesiass/aesthetic-art-gallery",
+  },
+  {
+    id: 3,
     title: "Smart Energy",
-    description: "Real-time CO₂ and energy tracking with data visualization and category-based analysis.",
+    description:
+      "Real-time CO₂ and energy tracking with data visualization and category-based analysis.",
     image: "/projects/SmartEnergy.jpg",
     tags: ["Next.js", "TailwindCSS", "MongoDB"],
     demoUrl: "https://smart-energy-2e28tkmmo-luis-iglesias-projects.vercel.app",
     githubUrl: "https://github.com/LuisIglesiass/SmartEnergy",
   },
   {
-    id: 3,
+    id: 4,
     title: "Tailwind UI Kit",
     description:
       "A modern, responsive UI components library built with Tailwind CSS and React, featuring clean design, ready-to-use components, and easy customization.",
@@ -30,7 +42,7 @@ const projects = [
     githubUrl: "https://github.com/LuisIglesiass/tailwind-ui-kit",
   },
   {
-    id: 4,
+    id: 5,
     title: "HabitFlow",
     description:
       "Minimalist habit tracker with progress visualization and smart tracking features.",
@@ -39,7 +51,7 @@ const projects = [
     githubUrl: "https://github.com/LuisIglesiass/habit-tracker",
   },
   {
-    id: 5,
+    id: 6,
     title: "Movie Searcher",
     description:
       "Fast and minimal movie search tool using OMDb API and pure JavaScript.",
@@ -49,17 +61,17 @@ const projects = [
     githubUrl: "https://github.com/LuisIglesiass/movie-search-js",
   },
   {
-    id: 6,
+    id: 7,
     title: "FocusList – React To-Do App",
-    description: 
-    "Clean to-do app for managing tasks with real-time stats and local storage.",
+    description:
+      "Clean to-do app for managing tasks with real-time stats and local storage.",
     image: "/projects/FocusList.jpg",
     tags: ["JavaScript", "React", "Vite", "CSS", "localStorage"],
     demoUrl: "https://focuslist-drab.vercel.app/",
     githubUrl: "https://github.com/LuisIglesiass/todo-app-react",
   },
   {
-    id: 7,
+    id: 8,
     title: "Simple Calculator",
     description:
       "Lightweight calculator designed for quick and easy calculations.",
@@ -67,7 +79,7 @@ const projects = [
     tags: ["Javascript", "CSS", "HTML"],
     demoUrl: "https://calculator-app-snowy-mu.vercel.app/",
     githubUrl: "https://github.com/LuisIglesiass/calculator-app",
-  }
+  },
 ];
 
 export const ProjectsSection = () => {
