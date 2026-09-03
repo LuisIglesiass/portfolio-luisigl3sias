@@ -1,4 +1,5 @@
 import { useReveal } from "@/hooks/use-reveal";
+import { RevealText } from "./RevealText";
 
 const experience = [
   {
@@ -75,7 +76,7 @@ export const ExperienceSection = () => {
     <section id="experience" className="py-28 px-6 md:px-12 relative bg-secondary/30">
       <div className="container">
         <p className="index-number mb-3">CAREER</p>
-        <h2 className="font-display text-3xl md:text-4xl">Experience</h2>
+        <RevealText as="h2" text="Experience" className="font-display text-3xl md:text-4xl block" />
 
         <div className="mt-8">
           {experience.map((item, i) => (

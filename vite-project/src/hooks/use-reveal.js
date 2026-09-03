@@ -1,31 +1,40 @@
 import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 /**
- * Adds the `reveal` class immediately and `reveal-in` once the element
- * scrolls into view. Returns a ref to attach to any element.
+ * Scroll-triggered reveal, GSAP-powered (same ref-based API as before,
+ * so every existing call site keeps working unchanged). Uses a real
+ * expo-out curve instead of a CSS cubic-bezier approximation.
  */
-export const useReveal = (options = {}) => {
+export const useReveal = () => {
   const ref = useRef(null);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    el.classList.add("reveal");
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add("reveal-in");
-          observer.unobserve(el);
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 32 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 88%",
+            once: true,
+          },
         }
-      },
-      { threshold: 0.15, ...options }
-    );
+      );
+    });
 
-    observer.observe(el);
-    return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => ctx.revert();
   }, []);
 
   return ref;

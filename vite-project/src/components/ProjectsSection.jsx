@@ -1,5 +1,12 @@
+import { useEffect, useRef } from "react";
 import { ArrowUpRight, Github } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReveal } from "@/hooks/use-reveal";
+import { useMagnetic } from "@/hooks/use-magnetic";
+import { RevealText } from "./RevealText";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
@@ -94,18 +101,46 @@ const projects = [
 
 const ProjectCard = ({ project, index }) => {
   const ref = useReveal();
+  const imgRef = useRef(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const img = imgRef.current;
+    if (!img) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        img,
+        { yPercent: -16 },
+        {
+          yPercent: -4,
+          ease: "none",
+          scrollTrigger: {
+            trigger: img,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        }
+      );
+    });
+    return () => ctx.revert();
+  }, []);
+
   return (
     <article
       ref={ref}
       className="rail-item w-[82vw] sm:w-[420px] rounded-2xl border border-border bg-card overflow-hidden group card-hover"
     >
       <div className="h-56 overflow-hidden relative">
-        <img
-          src={project.image}
-          alt={project.title}
-          loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+        <div ref={imgRef} className="w-full h-[130%]">
+          <img
+            src={project.image}
+            alt={project.title}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        </div>
         <span className="absolute top-3 left-3 font-mono text-xs bg-background px-2.5 py-1 rounded-full text-muted-foreground border border-border">
           0{index + 1}
         </span>
@@ -154,11 +189,13 @@ const ProjectCard = ({ project, index }) => {
 };
 
 export const ProjectsSection = () => {
+  const githubMagnetic = useMagnetic();
+
   return (
     <section id="projects" className="py-28 relative">
       <div className="container px-6 md:px-12">
         <p className="index-number mb-3">CATALOGUE</p>
-        <h2 className="font-display text-3xl md:text-4xl mb-4">Selected work</h2>
+        <RevealText as="h2" text="Selected work" className="font-display text-3xl md:text-4xl mb-4 block" />
         <p className="font-mono text-sm text-muted-foreground mb-10 max-w-xl">
           Nine shipped projects. Scroll sideways to browse.
         </p>
@@ -176,6 +213,7 @@ export const ProjectsSection = () => {
           target="_blank"
           rel="noreferrer"
           href="https://github.com/LuisIglesiass"
+          ref={githubMagnetic}
         >
           See everything on GitHub <ArrowUpRight size={15} />
         </a>

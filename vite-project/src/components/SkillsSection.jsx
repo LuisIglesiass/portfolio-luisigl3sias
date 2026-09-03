@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { cn } from "../lib/utils";
+import { RevealText } from "./RevealText";
 
 const skills = [
   { name: "Nuxt.js", category: "frontend" },
@@ -41,7 +42,7 @@ export const SkillsSection = () => {
     <section id="skills" className="py-28 px-6 md:px-12 relative">
       <div className="container">
         <p className="index-number mb-3">TOOLKIT</p>
-        <h2 className="font-display text-3xl md:text-4xl mb-10">Stack &amp; tools</h2>
+        <RevealText as="h2" text="Stack & tools" className="font-display text-3xl md:text-4xl mb-10 block" />
 
         <div className="flex flex-wrap gap-2 mb-10 font-mono text-xs">
           {categories.map((category) => (

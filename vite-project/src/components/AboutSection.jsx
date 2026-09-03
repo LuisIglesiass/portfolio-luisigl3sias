@@ -1,4 +1,6 @@
 import { useReveal } from "@/hooks/use-reveal";
+import { useMagnetic } from "@/hooks/use-magnetic";
+import { RevealText } from "./RevealText";
 
 const focusAreas = [
   "Nuxt.js",
@@ -22,11 +24,14 @@ const Tile = ({ className = "", children }) => {
 };
 
 export const AboutSection = () => {
+  const contactMagnetic = useMagnetic();
+  const cvMagnetic = useMagnetic();
+
   return (
     <section id="about" className="py-28 px-6 md:px-12 relative">
       <div className="container">
         <p className="index-number mb-3">WHO I AM</p>
-        <h2 className="font-display text-3xl md:text-4xl mb-12">About</h2>
+        <RevealText as="h2" text="About" className="font-display text-3xl md:text-4xl mb-12 block" />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
           <Tile className="lg:col-span-7 lg:row-span-2 flex flex-col justify-between">
@@ -46,10 +51,10 @@ export const AboutSection = () => {
               </p>
             </div>
             <div className="flex flex-wrap gap-4 pt-8">
-              <a href="#contact" className="btn-solid">
+              <a href="#contact" ref={contactMagnetic} className="btn-solid">
                 Get in touch
               </a>
-              <a href="/CVLuisIglesias.pdf" download className="btn-outline">
+              <a href="/CVLuisIglesias.pdf" download ref={cvMagnetic} className="btn-outline">
                 Download CV
               </a>
             </div>

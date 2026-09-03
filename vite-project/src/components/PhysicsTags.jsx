@@ -45,6 +45,10 @@ export const PhysicsTags = () => {
 
     const engine = Engine.create();
     engine.gravity.y = 1;
+    // Lets tags that have settled stop being actively simulated instead
+    // of endlessly micro-bouncing against a wall/each other — without
+    // this, a bouncy wall can look like jitter rather than a real rest.
+    engine.enableSleeping = true;
 
     const bodies = TAGS.map((label, i) => {
       const w = Math.ceil(measurer.measureText(label).width) + 30;
@@ -64,10 +68,20 @@ export const PhysicsTags = () => {
     });
 
     const wallThickness = 60;
+    const floor = Bodies.rectangle(width / 2, height + wallThickness / 2, width + 200, wallThickness, {
+      isStatic: true,
+      restitution: 0.3,
+    });
+    // Side walls get a bit more restitution than a plain tag-on-tag
+    // collision (0.35) — Matter.js takes the max of the two colliding
+    // bodies' restitution — but stay well short of "elastic": with near-
+    // zero friction a high-restitution wall never bleeds energy and just
+    // jitters forever instead of settling, which reads as a bug.
+    const sideWallOptions = { isStatic: true, restitution: 0.45, friction: 0.06 };
     const walls = [
-      Bodies.rectangle(width / 2, height + wallThickness / 2, width + 200, wallThickness, { isStatic: true }),
-      Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height * 3, { isStatic: true }),
-      Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height * 3, { isStatic: true }),
+      floor,
+      Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height * 3, sideWallOptions),
+      Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height * 3, sideWallOptions),
     ];
 
     const cursorBody = Bodies.circle(-100, -100, 22, { isStatic: true });
