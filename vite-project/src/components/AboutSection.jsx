@@ -1,84 +1,87 @@
-import { Code, User, Briefcase } from "lucide-react"
+import { useReveal } from "@/hooks/use-reveal";
+
+const focusAreas = [
+  "Nuxt.js",
+  "Vue.js",
+  "WordPress",
+  "Tailwind CSS",
+  "TypeScript",
+  "UX & Performance",
+];
+
+const Tile = ({ className = "", children }) => {
+  const ref = useReveal();
+  return (
+    <div
+      ref={ref}
+      className={`rounded-2xl border border-border bg-card p-6 sm:p-8 card-hover ${className}`}
+    >
+      {children}
+    </div>
+  );
+};
 
 export const AboutSection = () => {
-	return (
-	<section id="about" className="py-24 px-4 relative">
-		<div className="container mx-auto max-w-5xl">
-			<h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
-				About <span className="text-primary"> Me</span>
-			</h2>
+  return (
+    <section id="about" className="py-28 px-6 md:px-12 relative">
+      <div className="container">
+        <p className="index-number mb-3">WHO I AM</p>
+        <h2 className="font-display text-3xl md:text-4xl mb-12">About</h2>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-				<div className="space-y-6">
-					<h3 className="text-2xl font-semibold">
-						Passionate Web Developer
-					</h3>
-
-					<p className="text-muted-foreground">
-						I specialize in creating responsive, accessible, 
-						and high-performance web applications using modern technologies.
-					</p>
-
-					<p className="text-muted-foreground">
-						I enjoy turning complex challenges into clean, user-friendly solutions.
-						Always curious, I stay up to date with the latest technologies to build for the modern web.
-					</p>
-
-					<div className="flex flex-col sm:flex-row gap-4 pt-4 justify-center">
-						<a href="#contact" className="cosmic-button">
-							Get In Touch
-						</a>
-						<a href="/CVLuisIglesias.pdf" download className="px-6 py-2 rounded-full border border-primary text-primary hover:bg-primary/10 transition-colors duration-300">
-							Download CV
-						</a>
-					</div>
-				</div>
-
-				<div className="grid grid-cols-1 gap-6">
-            <div className="gradient-border p-6 card-hover">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <Code className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-left">
-                  <h4 className="font-semibold text-lg"> Web Development</h4>
-                  <p className="text-muted-foreground">
-                      Developing responsive and performant web apps using React, Next.js, and Angular.
-                      Focused on clean code and modern best practices.
-                  </p>
-                </div>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          <Tile className="lg:col-span-7 lg:row-span-2 flex flex-col justify-between">
+            <div className="space-y-5">
+              <p className="font-display text-2xl sm:text-3xl leading-snug">
+                I turn interfaces into things people actually enjoy using —
+                fast, accessible, built to last.
+              </p>
+              <p className="font-mono text-sm text-muted-foreground leading-relaxed">
+                Trained as a Fachinformatiker für Anwendungsentwicklung at
+                Kühne+Nagel, then freelanced through Re:frame e.V. before
+                joining FLOW4 Webdesign full-time, where I build digital
+                platforms with Nuxt and Vue. Alongside that I run{" "}
+                <span className="text-foreground">Iglesias Web Agency</span>,
+                my own studio for businesses that want a site that doesn't
+                look like everyone else's.
+              </p>
             </div>
-            <div className="gradient-border p-6 card-hover">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <User className="h-6 w-6 text-primary" />
-                </div>
-                <div className="text-left">
-                  <h4 className="font-semibold text-lg">UI/UX Design</h4>
-                  <p className="text-muted-foreground">
-                    Creating intuitive, accessible interfaces that enhance user experience.
-                    Collaborating closely with frontend teams for seamless results.
-                  </p>
-                </div>
-              </div>
+            <div className="flex flex-wrap gap-4 pt-8">
+              <a href="#contact" className="btn-solid">
+                Get in touch
+              </a>
+              <a href="/CVLuisIglesias.pdf" download className="btn-outline">
+                Download CV
+              </a>
             </div>
-            <div className="gradient-border p-6 card-hover">
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <Briefcase className="h-6 w-6 text-primary" />
-                </div>
+          </Tile>
 
-                <div className="text-left">
-                  <h4 className="font-semibold text-lg">Project Management</h4>
-                  <p className="text-muted-foreground">
-                      Working in agile teams from feature planning to delivery.
-                    Experienced with Git, Bitbucket, and cross-functional collaboration.
-                  </p>
-                </div>
-              </div>
+          <Tile className="lg:col-span-5">
+            <p className="font-display text-5xl text-primary">9+</p>
+            <p className="font-mono text-xs text-muted-foreground mt-2">
+              side &amp; client projects shipped and live
+            </p>
+          </Tile>
+
+          <Tile className="lg:col-span-5">
+            <p className="font-display text-5xl text-primary">4</p>
+            <p className="font-mono text-xs text-muted-foreground mt-2">
+              languages — German, Spanish, English, Portuguese
+            </p>
+          </Tile>
+
+          <Tile className="lg:col-span-12">
+            <p className="index-number mb-4">CURRENT FOCUS</p>
+            <div className="flex flex-wrap gap-3">
+              {focusAreas.map((area) => (
+                <span
+                  key={area}
+                  className="font-mono text-xs px-4 py-2 rounded-full border border-border text-foreground/80 hover:border-primary hover:text-primary transition-colors duration-300"
+                >
+                  {area}
+                </span>
+              ))}
             </div>
-          </div>
+          </Tile>
         </div>
       </div>
     </section>

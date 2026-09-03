@@ -1,69 +1,58 @@
-import {
-	Instagram,
-	Linkedin,
-	Mail,
-	MapPin,
-	Send
-  } from "lucide-react";
-  
-  export const ContactSection = () => {
+import { Instagram, Linkedin, MapPin, ArrowUpRight } from "lucide-react";
+import { useReveal } from "@/hooks/use-reveal";
 
-	return (
-	  <section id="contact" className="py-24 px-4 relative bg-secondary/30">
-		<div className="container mx-auto max-w-5xl">
-		  <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center">
-			Get In <span className="text-primary"> Touch</span>
-		  </h2>
-  
-		  <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-			Have a project in mind or want to collaborate? Feel free to reach out.
-			I'm always open to discussing new opportunities.
-		  </p>
-  
-		  <div className="grid grid-cols-1 md:grid-cols-1 gap-12 justify-center">
-			<div className="space-y-8 mx-auto text-center">  
-			  <div className="space-y-6 justify-center">
-				<div className="flex items-start space-x-4">
-				  <div className="p-3 rounded-full bg-primary/10">
-					<Mail className="h-6 w-6 text-primary" />{" "}
-				  </div>
-				  <div>
-					<h4 className="font-medium"> Email</h4>
-					<a
-					  href="mailto:hello@gmail.com"
-					  className="text-muted-foreground hover:text-primary transition-colors"
-					>
-					  lluis.igl3sias@gmail.com
-					</a>
-				  </div>
-				</div>
-				<div className="flex items-start space-x-4">
-				  <div className="p-3 rounded-full bg-primary/10">
-					<MapPin className="h-6 w-6 text-primary" />{" "}
-				  </div>
-				  <div>
-					<h4 className="font-medium"> Location</h4>
-					<a className="text-muted-foreground hover:text-primary transition-colors">
-					  Hamburg, DE, Germany
-					</a>
-				  </div>
-				</div>
-			  </div>
-  
-			  <div className="pt-8">
-				<h4 className="font-medium mb-4"> Connect With Me</h4>
-				<div className="flex space-x-4 justify-center">
-				  <a href="https://www.linkedin.com/in/luis-iglesias-ab8068243/" target="_blank">
-					<Linkedin />
-				  </a>
-				  <a href="https://www.instagram.com/lluis.iglesias?igsh=ZWl1NHg1dm1vMmJ3&utm_source=qr" target="_blank">
-					<Instagram />
-				  </a>
-				</div>
-			  </div>
-			</div>
-		  </div>
-		</div>
-	  </section>
-	);
-  };
+export const ContactSection = () => {
+  const ref = useReveal();
+
+  return (
+    <section id="contact" className="py-32 px-6 md:px-12 relative bg-secondary/30">
+      <div className="container">
+        <p className="index-number mb-3">GET IN TOUCH</p>
+        <h2 className="font-display text-3xl md:text-4xl mb-14">Contact</h2>
+
+        <div ref={ref} className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+          <div className="lg:col-span-9">
+            <p className="font-mono text-sm text-muted-foreground mb-4 max-w-md">
+              Have a project in mind, or want to collaborate? I'm always open
+              to new opportunities.
+            </p>
+            <a
+              href="mailto:lluis.igl3sias@gmail.com"
+              className="group font-display text-3xl sm:text-5xl lg:text-6xl inline-flex items-center gap-4 hover:text-primary transition-colors duration-300 break-all"
+            >
+              lluis.igl3sias@gmail.com
+              <ArrowUpRight className="h-8 w-8 sm:h-10 sm:w-10 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300 shrink-0" />
+            </a>
+          </div>
+
+          <div className="lg:col-span-3 flex flex-col gap-6 font-mono text-sm">
+            <div className="flex items-start gap-3 text-muted-foreground">
+              <MapPin className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+              Hamburg / Winsen (Luhe), Germany — Remote
+            </div>
+            <div className="flex gap-4">
+              <a
+                href="https://www.linkedin.com/in/luis-iglesias-ab8068243/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="LinkedIn"
+                className="p-3 rounded-full border border-border hover:border-primary hover:text-primary transition-colors"
+              >
+                <Linkedin size={18} />
+              </a>
+              <a
+                href="https://www.instagram.com/lluis.iglesias?igsh=ZWl1NHg1dm1vMmJ3&utm_source=qr"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+                className="p-3 rounded-full border border-border hover:border-primary hover:text-primary transition-colors"
+              >
+                <Instagram size={18} />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};

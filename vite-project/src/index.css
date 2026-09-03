@@ -4,87 +4,69 @@
   --color-border: hsl(var(--border));
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
+  --color-muted-foreground: hsl(var(--muted-foreground));
 
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
 
+  --color-accent: hsl(var(--accent));
   --color-card: hsl(var(--card));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 
   --animate-float: float 6s ease-in-out infinite;
-  --animate-pulse-subtle: pulse-subtle 4s ease-in-out infinite;
-  --animate-fade-in: fade-in 0.7s ease-out forwards;
-  --animate-fade-in-delay-1: fade-in 0.7s ease-out 0.2s forwards;
-  --animate-fade-in-delay-2: fade-in 0.7s ease-out 0.4s forwards;
-  --animate-fade-in-delay-3: fade-in 0.7s ease-out 0.6s forwards;
-  --animate-fade-in-delay-4: fade-in 0.7s ease-out 0.8s forwards;
-  --animate-meteor: meteor 5s linear infinite;
+  --animate-fade-in: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in-delay-1: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+  --animate-fade-in-delay-2: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  --animate-fade-in-delay-3: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+  --animate-fade-in-delay-4: fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
 
   @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-  @keyframes pulse-subtle {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.8;
-    }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
   }
   @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  @keyframes meteor {
-    0% {
-      transform: rotate(215deg) translateX(0);
-      opacity: 1;
-    }
-    70% {
-      opacity: 1;
-    }
-    100% {
-      transform: rotate(215deg) translateX(-500px);
-      opacity: 0;
-    }
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 }
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    /* "Paper" — light mode */
+    --background: 40 33% 96%;
+    --foreground: 20 25% 9%;
+    --muted-foreground: 20 8% 38%;
 
-    --card: 0 0% 100%;
+    --card: 40 28% 99%;
+    --secondary: 30 20% 91%;
+    --secondary-foreground: 20 25% 9%;
 
-    --primary: 250 47% 60%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 18 74% 47%;
+    --primary-foreground: 40 33% 98%;
+    --accent: 84 22% 38%;
 
-    --border: 214 32% 91%;
+    --border: 30 15% 84%;
   }
 
   .dark {
-    --background: 222 47% 4%;
-    --foreground: 213 31% 91%;
+    /* "Ink" — dark mode */
+    --background: 240 8% 6%;
+    --foreground: 40 22% 93%;
+    --muted-foreground: 40 8% 62%;
 
-    --card: 222 47% 8%;
+    --card: 240 7% 10%;
+    --secondary: 240 6% 15%;
+    --secondary-foreground: 40 22% 93%;
 
-    --primary: 250 65% 65%;
-    --primary-foreground: 213 31% 91%;
+    --primary: 18 85% 58%;
+    --primary-foreground: 20 25% 8%;
+    --accent: 84 30% 62%;
 
-    --border: 217 33% 20%;
+    --border: 240 6% 20%;
   }
 
   * {
@@ -97,66 +79,123 @@
 
   body {
     @apply bg-background text-foreground transition-colors duration-300;
+    font-family: var(--font-mono);
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.25);
+    color: hsl(var(--foreground));
   }
 }
 
 @utility container {
   margin-inline: auto;
-  padding-inline: 2rem;
+  padding-inline: 1.5rem;
 
-  @media (width >= 640px) {
-    max-width: 640px;
-  }
-  @media (width >= 768px) {
-    max-width: 768px;
-  }
-  @media (width >= 1024px) {
-    max-width: 1024px;
-  }
-  @media (width >= 1280px) {
-    max-width: 1280px;
-  }
-  @media (width >= 1400px) {
-    max-width: 1400px;
-  }
+  @media (width >= 640px) { max-width: 640px; }
+  @media (width >= 768px) { max-width: 768px; }
+  @media (width >= 1024px) { max-width: 1024px; }
+  @media (width >= 1280px) { max-width: 1280px; }
+  @media (width >= 1400px) { max-width: 1400px; }
+}
+
+/* ---------- Reveal-on-scroll ---------- */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@utility reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- Typography helpers ---------- */
+@utility font-display {
+  font-family: var(--font-display);
+}
+@utility font-mono {
+  font-family: var(--font-mono);
 }
 
 @utility text-glow {
   @apply relative;
-  text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+  text-shadow: 0 0 24px hsl(var(--primary) / 0.35);
 }
 
+/* ---------- Cards & surfaces ---------- */
 @utility card-hover {
-  @apply transition-transform duration-300 hover:scale-[1.02] hover:shadow-lg;
+  @apply transition-all duration-500;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
 }
 
-@utility gradient-border {
-  @apply relative rounded-md;
-  background: linear-gradient(to right, hsl(var(--card)), hsl(var(--card)));
-  background-clip: padding-box;
-  border: 1px solid transparent;
+@utility index-number {
+  font-family: var(--font-mono);
+  @apply text-xs tracking-[0.2em] text-muted-foreground;
 }
 
+/* ---------- Buttons ---------- */
+@utility btn-solid {
+  @apply inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground
+         font-mono text-sm px-6 py-3 transition-all duration-300
+         hover:shadow-[0_0_0_1px_hsl(var(--primary))] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer;
+}
+@utility btn-outline {
+  @apply inline-flex items-center gap-2 rounded-full border border-foreground/25 text-foreground
+         font-mono text-sm px-6 py-3 transition-all duration-300
+         hover:border-primary hover:text-primary hover:-translate-y-0.5 active:translate-y-0 cursor-pointer;
+}
+
+/* legacy alias kept for safety */
 @utility cosmic-button {
-  @apply px-6 py-2 rounded-full bg-primary text-primary-foreground font-medium 
-         transition-all duration-300 hover:shadow-[0_0_10px_rgba(139,92,246,0.5)]
-         hover:scale-105 active:scale-95 cursor-pointer;
+  @apply btn-solid;
 }
 
-@utility star {
-  @apply absolute rounded-full bg-white;
-  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.4);
+/* ---------- Horizontal scroll-snap rail (projects) ---------- */
+.rail {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 1.5rem;
+  padding-bottom: 1.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+.rail::-webkit-scrollbar {
+  height: 6px;
+}
+.rail::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 999px;
+}
+.rail-item {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
 }
 
-@utility meteor {
-  @apply absolute bg-linear-to-r from-white via-white to-transparent rounded-full;
-  box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.3);
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- Top navigation surface ---------- */
+.nav-surface {
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.nav-surface[data-scrolled="true"] {
+  background: hsl(var(--background) / 0.96);
+  border-bottom-color: hsl(var(--border));
 }
 
 #root {
   max-width: 100%;
   margin: 0 auto;
   padding: 0;
-  text-align: center;
 }
