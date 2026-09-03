@@ -5,20 +5,27 @@ const skills = [
   { name: "Nuxt.js", category: "frontend" },
   { name: "Vue.js", category: "frontend" },
   { name: "React", category: "frontend" },
+  { name: "Angular", category: "frontend" },
   { name: "JavaScript", category: "frontend" },
   { name: "TypeScript", category: "frontend" },
   { name: "Tailwind CSS", category: "frontend" },
-  { name: "HTML / CSS", category: "frontend" },
+  { name: "SCSS", category: "frontend" },
+  { name: "HTML5 / CSS", category: "frontend" },
 
   { name: "WordPress", category: "cms & backend" },
+  { name: "Strapi", category: "cms & backend" },
+  { name: "Spring Boot", category: "cms & backend" },
   { name: "Express", category: "cms & backend" },
   { name: "MongoDB", category: "cms & backend" },
   { name: "SQL", category: "cms & backend" },
+  { name: "Python", category: "cms & backend" },
 
   { name: "Git / GitHub", category: "tools" },
+  { name: "Bitbucket", category: "tools" },
   { name: "Figma", category: "tools" },
   { name: "VS Code", category: "tools" },
   { name: "Docker", category: "tools" },
+  { name: "Scrum / Kanban", category: "tools" },
 ];
 
 const categories = ["all", "frontend", "cms & backend", "tools"];

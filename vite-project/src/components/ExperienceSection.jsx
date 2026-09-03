@@ -8,8 +8,8 @@ const experience = [
     company: "FLOW4 Webdesign UG & Co. KG",
     type: "Full-time · Remote",
     description:
-      "Building modern web platforms with Nuxt.js and Vue.js, custom WordPress solutions for client projects, and responsive frontends focused on UX and performance.",
-    tags: ["Nuxt.js", "Vue.js", "WordPress", "Tailwind"],
+      "Building modern web platforms with Nuxt.js and Vue.js, custom WordPress and Strapi solutions for client projects, and responsive, TypeScript-driven frontends with Tailwind CSS.",
+    tags: ["Nuxt.js", "Vue.js", "TypeScript", "Tailwind CSS", "WordPress", "Strapi"],
   },
   {
     period: "Sept 2024 — Oct 2025",
@@ -18,8 +18,8 @@ const experience = [
     company: "Re:frame e.V.",
     type: "Freelance · Remote",
     description:
-      "Georeferenced historical location data and built scripting tools for data analysis and processing.",
-    tags: ["Data Analysis", "Scripting"],
+      "Georeferenced historical place names and integrated data from OpenStreetMap and Wikidata. Built Python scripts to automate enrichment and processing, with quality and plausibility checks on the resulting geodata.",
+    tags: ["Python", "OpenStreetMap", "Wikidata", "Data Integration"],
   },
   {
     period: "Aug 2022 — Jul 2025",
@@ -28,8 +28,8 @@ const experience = [
     company: "Kühne+Nagel",
     type: "Ausbildung · Hybrid",
     description:
-      "Trained in application development, optimizing and shipping new features, analyzing performance, and collaborating closely with frontend teams.",
-    tags: ["Java", "Angular", "SQL"],
+      "Trained in full-stack application development — Java and Spring Boot on the backend, Angular and Vue on the frontend — working in Scrum teams and collaborating closely with the frontend department.",
+    tags: ["Java", "Spring Boot", "Angular", "Git", "Scrum"],
   },
 ];
 
