@@ -27,7 +27,7 @@ export const useReveal = () => {
           ease: "power4.out",
           scrollTrigger: {
             trigger: el,
-            start: "top 88%",
+            start: "top 92%",
             once: true,
           },
         }

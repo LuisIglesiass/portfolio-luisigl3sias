@@ -32,6 +32,16 @@ export const initSmoothScroll = () => {
   gsap.ticker.add(tick);
   gsap.ticker.lagSmoothing(0);
 
+  // ScrollTrigger measures trigger positions in pixels at creation time.
+  // Variable-font swaps, lazy images, and the hero's physics settling
+  // all change page height slightly after that — the drift compounds
+  // going down the page, so the last section's trigger point can end
+  // up past the real bottom of the document and simply never fire.
+  // Recalculate once layout has actually settled.
+  document.fonts?.ready?.then(() => ScrollTrigger.refresh());
+  window.addEventListener("load", () => ScrollTrigger.refresh());
+  const settleRefresh = setTimeout(() => ScrollTrigger.refresh(), 1500);
+
   const handleAnchorClick = (e) => {
     const link = e.target.closest('a[href^="#"]');
     if (!link) return;
@@ -44,6 +54,7 @@ export const initSmoothScroll = () => {
   document.addEventListener("click", handleAnchorClick);
 
   return () => {
+    clearTimeout(settleRefresh);
     document.removeEventListener("click", handleAnchorClick);
     gsap.ticker.remove(tick);
     lenis.off("scroll", onScroll);

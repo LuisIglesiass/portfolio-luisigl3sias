@@ -33,7 +33,7 @@ export const RevealText = ({ text, as: Tag = "span", className = "" }) => {
           stagger: 0.06,
           scrollTrigger: {
             trigger: el,
-            start: "top 85%",
+            start: "top 92%",
             once: true,
           },
         }
