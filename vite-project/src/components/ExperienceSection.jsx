@@ -38,7 +38,7 @@ const Row = ({ item, index }) => {
   return (
     <div
       ref={ref}
-      className="group grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 py-8 border-t border-border first:border-t-0 md:first:border-t md:first:pt-0"
+      className="group grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-8 py-8 border-t border-border first:border-t-0 first:pt-0"
     >
       <div className="md:col-span-1 font-mono text-xs text-muted-foreground">
         0{index + 1}
