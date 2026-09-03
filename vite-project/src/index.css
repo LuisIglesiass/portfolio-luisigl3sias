@@ -32,12 +32,6 @@
     from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  @keyframes stamp-press {
-    0% { transform: scale(2.2) rotate(-30deg); opacity: 0; }
-    55% { transform: scale(0.92) rotate(-6deg); opacity: 1; }
-    75% { transform: scale(1.04) rotate(-10deg); }
-    100% { transform: scale(1) rotate(-9deg); opacity: 1; }
-  }
 }
 
 @layer base {
@@ -125,10 +119,6 @@
   font-family: var(--font-mono);
 }
 
-@utility stamp-in {
-  animation: stamp-press 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
 @utility text-glow {
   @apply relative;
   text-shadow: 0 0 24px hsl(var(--primary) / 0.35);
@@ -169,9 +159,10 @@
   display: flex;
   gap: 1.5rem;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
   scroll-padding-left: 1.5rem;
   padding-bottom: 1.5rem;
+  overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
 }
 .rail::-webkit-scrollbar {

@@ -1,6 +1,7 @@
 import { ArrowDown, ArrowUpRight } from "lucide-react";
-import { StampBadge } from "./StampBadge";
+import { LiquidBackground } from "./LiquidBackground";
 import { KineticName } from "./KineticName";
+import { PhysicsTags } from "./PhysicsTags";
 
 export const HeroSection = () => {
   return (
@@ -8,7 +9,8 @@ export const HeroSection = () => {
       id="hero"
       className="relative min-h-screen flex flex-col justify-center px-6 md:px-12 pt-28 pb-20 overflow-hidden"
     >
-      <StampBadge />
+      <LiquidBackground />
+      <PhysicsTags />
 
       <div className="container relative z-10">
         {/* top meta row */}

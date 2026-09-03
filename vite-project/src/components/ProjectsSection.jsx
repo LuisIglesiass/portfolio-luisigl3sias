@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { ArrowUpRight, Github } from "lucide-react";
 import { useReveal } from "@/hooks/use-reveal";
 
@@ -154,6 +155,28 @@ const ProjectCard = ({ project, index }) => {
 };
 
 export const ProjectsSection = () => {
+  const railRef = useRef(null);
+
+  // A horizontal scroll-snap rail sitting inside a vertically scrolling
+  // page will otherwise "catch" trackpad gestures that carry even a
+  // tiny sideways component, stuttering the page scroll as the rail's
+  // snap engine fights for the gesture. Decide axis intent ourselves:
+  // vertical-dominant wheel input is driven straight to the page and
+  // never touches the rail; only clearly horizontal input reaches it.
+  useEffect(() => {
+    const el = railRef.current;
+    if (!el) return;
+
+    const onWheel = (e) => {
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      window.scrollBy({ top: e.deltaY });
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+
   return (
     <section id="projects" className="py-28 relative">
       <div className="container px-6 md:px-12">
@@ -164,7 +187,7 @@ export const ProjectsSection = () => {
         </p>
       </div>
 
-      <div className="rail px-6 md:px-12">
+      <div ref={railRef} className="rail px-6 md:px-12">
         {projects.map((project, i) => (
           <ProjectCard key={project.id} project={project} index={i} />
         ))}
