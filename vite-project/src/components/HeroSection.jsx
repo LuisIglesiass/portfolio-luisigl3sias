@@ -2,12 +2,8 @@ import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { LiquidBackground } from "./LiquidBackground";
 import { KineticName } from "./KineticName";
 import { PhysicsTags } from "./PhysicsTags";
-import { useMagnetic } from "@/hooks/use-magnetic";
 
 export const HeroSection = () => {
-  const workMagnetic = useMagnetic();
-  const cvMagnetic = useMagnetic();
-
   return (
     <section
       id="hero"
@@ -51,10 +47,10 @@ export const HeroSection = () => {
 
         {/* CTAs */}
         <div className="mt-10 flex flex-wrap items-center gap-4 opacity-0 animate-fade-in-delay-4">
-          <a href="#projects" ref={workMagnetic} className="btn-solid">
+          <a href="#projects" className="btn-solid">
             View the work <ArrowUpRight size={15} />
           </a>
-          <a href="/CVLuisIglesias.pdf" download ref={cvMagnetic} className="btn-outline">
+          <a href="/CVLuisIglesias.pdf" download className="btn-outline">
             Download CV
           </a>
         </div>

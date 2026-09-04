@@ -1,5 +1,4 @@
 import { useReveal } from "@/hooks/use-reveal";
-import { useMagnetic } from "@/hooks/use-magnetic";
 import { RevealText } from "./RevealText";
 
 const focusAreas = [
@@ -24,9 +23,6 @@ const Tile = ({ className = "", children }) => {
 };
 
 export const AboutSection = () => {
-  const contactMagnetic = useMagnetic();
-  const cvMagnetic = useMagnetic();
-
   return (
     <section id="about" className="py-28 px-6 md:px-12 relative">
       <div className="container">
@@ -51,10 +47,10 @@ export const AboutSection = () => {
               </p>
             </div>
             <div className="flex flex-wrap gap-4 pt-8">
-              <a href="#contact" ref={contactMagnetic} className="btn-solid">
+              <a href="#contact" className="btn-solid">
                 Get in touch
               </a>
-              <a href="/CVLuisIglesias.pdf" download ref={cvMagnetic} className="btn-outline">
+              <a href="/CVLuisIglesias.pdf" download className="btn-outline">
                 Download CV
               </a>
             </div>

@@ -1,12 +1,9 @@
 import { Instagram, Linkedin, MapPin, ArrowUpRight } from "lucide-react";
 import { useReveal } from "@/hooks/use-reveal";
-import { useMagnetic } from "@/hooks/use-magnetic";
 import { RevealText } from "./RevealText";
 
 export const ContactSection = () => {
   const ref = useReveal();
-  const linkedinMagnetic = useMagnetic(0.5);
-  const instagramMagnetic = useMagnetic(0.5);
 
   return (
     <section id="contact" className="py-32 px-6 md:px-12 relative bg-secondary/30">
@@ -40,7 +37,6 @@ export const ContactSection = () => {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="LinkedIn"
-                ref={linkedinMagnetic}
                 className="p-3 rounded-full border border-border hover:border-primary hover:text-primary transition-colors"
               >
                 <Linkedin size={18} />
@@ -50,7 +46,6 @@ export const ContactSection = () => {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
-                ref={instagramMagnetic}
                 className="p-3 rounded-full border border-border hover:border-primary hover:text-primary transition-colors"
               >
                 <Instagram size={18} />

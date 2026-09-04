@@ -3,7 +3,6 @@ import { ArrowUpRight, Github } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReveal } from "@/hooks/use-reveal";
-import { useMagnetic } from "@/hooks/use-magnetic";
 import { RevealText } from "./RevealText";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -189,8 +188,6 @@ const ProjectCard = ({ project, index }) => {
 };
 
 export const ProjectsSection = () => {
-  const githubMagnetic = useMagnetic();
-
   return (
     <section id="projects" className="py-28 relative">
       <div className="container px-6 md:px-12">
@@ -213,7 +210,6 @@ export const ProjectsSection = () => {
           target="_blank"
           rel="noreferrer"
           href="https://github.com/LuisIglesiass"
-          ref={githubMagnetic}
         >
           See everything on GitHub <ArrowUpRight size={15} />
         </a>
