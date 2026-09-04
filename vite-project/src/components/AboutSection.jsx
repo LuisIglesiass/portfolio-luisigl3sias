@@ -98,7 +98,7 @@ export const AboutSection = () => {
           </Tile>
 
           <Tile className="lg:col-span-5">
-            <p className="font-display text-5xl text-primary">9+</p>
+            <p className="font-display text-5xl text-primary">11+</p>
             <p className="font-mono text-xs text-muted-foreground mt-2">
               side &amp; client projects shipped and live
             </p>

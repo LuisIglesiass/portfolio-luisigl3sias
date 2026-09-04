@@ -16,6 +16,8 @@
 
 ## Selected work
 
+- [Velaros](https://velaros.eu) — Client, via Iglesias Web Agency: Custom e-commerce shop with integrated CRM (Nuxt 3, Strapi 5). +40% sales since launch.
+- [Nex Trading Intelligence](https://nextrading-intelligence.com) — Client, via Iglesias Web Agency: Trading education platform (Nuxt 4, TypeScript, GSAP).
 - [AI Job Assistant](https://ai-job-application-assistant-eta.vercel.app/): CV-to-job match scoring and AI-generated cover letters (Nuxt 3, TypeScript, DeepSeek AI).
 - [Smart Budget Planner](https://smart-budget-planner-jet.vercel.app/): Personal finance and budget tracking app (React, Tailwind CSS).
 - [Aesthetic Art Gallery](https://aesthetic-art-gallery.vercel.app/): Minimalist digital art gallery (Nuxt, GSAP).

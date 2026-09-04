@@ -8,7 +8,7 @@ I turn interfaces into things people actually enjoy using — fast, accessible, 
 
 Trained as a Fachinformatiker für Anwendungsentwicklung at Kühne+Nagel, then freelanced through Re:frame e.V. before joining FLOW4 Webdesign full-time, where I build digital platforms with Nuxt and Vue. Alongside that I run Iglesias Web Agency, my own studio for businesses that want a site that doesn't look like everyone else's.
 
-- 9+ side & client projects shipped and live
+- 11+ side & client projects shipped and live
 - 4 languages: German, Spanish, English, Portuguese
 - Current focus: Nuxt.js, Vue.js, WordPress, Tailwind CSS, TypeScript, UX & Performance
 
@@ -42,6 +42,20 @@ CMS & backend: WordPress, Strapi, Spring Boot, Express, MongoDB, SQL, Python
 Tools: Git/GitHub, Bitbucket, Figma, VS Code, Docker, Scrum/Kanban
 
 ## Selected work
+
+### Velaros — Client (Iglesias Web Agency)
+https://velaros.eu · https://www.iglesias-web-agency.de/work/velaros
+
+Custom-built e-commerce shop with its own integrated CRM for a one-person team to run — no rigid template, no admin overload. 1.0s load time, 98 Lighthouse (desktop), +40% sales since launch.
+
+Tags: Nuxt 3, Strapi 5, E-Commerce, CRM
+
+### Nex Trading Intelligence — Client (Iglesias Web Agency)
+https://nextrading-intelligence.com · https://www.iglesias-web-agency.de/work/nex-trading-intelligence
+
+Trading education platform built to feel credible from the first scroll — restrained dark UI, GSAP-choreographed hero, scroll-driven sequences guiding visitors toward the community. 1.3s load time, 95 Lighthouse (desktop).
+
+Tags: Nuxt 4, TypeScript, SCSS, GSAP
 
 ### AI Job Assistant
 https://ai-job-application-assistant-eta.vercel.app/ · https://github.com/LuisIglesiass/ai-job-application-assistant

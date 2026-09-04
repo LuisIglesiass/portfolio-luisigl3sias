@@ -8,7 +8,7 @@ I turn interfaces into things people actually enjoy using — fast, accessible, 
 
 Trained as a Fachinformatiker für Anwendungsentwicklung at Kühne+Nagel, then freelanced through Re:frame e.V. before joining FLOW4 Webdesign full-time, where I build digital platforms with Nuxt and Vue. Alongside that I run Iglesias Web Agency, my own studio for businesses that want a site that doesn't look like everyone else's.
 
-- 9+ side & client projects shipped and live
+- 11+ side & client projects shipped and live
 - 4 languages: German, Spanish, English, Portuguese
 
 ## Experience
@@ -25,6 +25,8 @@ Nuxt.js, Vue.js, React, Angular, TypeScript, Tailwind CSS, SCSS, WordPress, Stra
 
 ## Selected work
 
+- [Velaros](https://velaros.eu) — Client, via Iglesias Web Agency
+- [Nex Trading Intelligence](https://nextrading-intelligence.com) — Client, via Iglesias Web Agency
 - [AI Job Assistant](https://ai-job-application-assistant-eta.vercel.app/)
 - [Smart Budget Planner](https://smart-budget-planner-jet.vercel.app/)
 - [Aesthetic Art Gallery](https://aesthetic-art-gallery.vercel.app/)
