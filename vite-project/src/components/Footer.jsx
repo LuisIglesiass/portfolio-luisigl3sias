@@ -2,12 +2,12 @@ import { ArrowUp } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="px-6 md:px-12 py-8 border-t border-border flex flex-wrap gap-4 justify-between items-center font-mono text-xs text-muted-foreground">
+    <footer className="px-6 md:px-12 py-8 border-t border-border flex flex-col sm:flex-row gap-4 sm:justify-between sm:items-center font-mono text-xs text-muted-foreground">
       <p>
         © {new Date().getFullYear()} Luis Iglesias — designed &amp; built by
         hand, no template.
       </p>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <a href="/privacy" className="hover:text-primary transition-colors">
           Privacy Policy
         </a>
