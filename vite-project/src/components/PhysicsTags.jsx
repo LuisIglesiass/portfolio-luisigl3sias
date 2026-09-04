@@ -37,8 +37,8 @@ export const PhysicsTags = () => {
     const { Engine, Bodies, Body, Composite, Events } = Matter;
 
     const rect = container.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
+    let width = rect.width;
+    let height = rect.height;
 
     const measurer = document.createElement("canvas").getContext("2d");
     measurer.font = "500 13px 'JetBrains Mono', ui-monospace, monospace";
@@ -84,6 +84,23 @@ export const PhysicsTags = () => {
 
     Composite.add(engine.world, [...bodies.map((b) => b.body), ...walls, cursorBody]);
     setChips(bodies);
+
+    const [floorBody, leftWall, rightWall] = walls;
+
+    // Without this, the invisible floor/walls stay at their mount-time
+    // pixel coordinates forever while the visual container keeps
+    // resizing with the viewport/layout — the pile then settles below
+    // (or above) where the container actually ends, and gets abruptly
+    // clipped by the hero's overflow-hidden instead of resting inside it.
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      width = entry.contentRect.width;
+      height = entry.contentRect.height;
+      Body.setPosition(floorBody, { x: width / 2, y: height + wallThickness / 2 });
+      Body.setPosition(leftWall, { x: -wallThickness / 2, y: height / 2 });
+      Body.setPosition(rightWall, { x: width + wallThickness / 2, y: height / 2 });
+    });
+    resizeObserver.observe(container);
 
     const handleMove = (e) => {
       const r = container.getBoundingClientRect();
@@ -137,6 +154,7 @@ export const PhysicsTags = () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("pointermove", handleMove);
       container.removeEventListener("click", handleClick);
+      resizeObserver.disconnect();
       io.disconnect();
       Events.off(engine);
       Composite.clear(engine.world, false);
@@ -153,7 +171,11 @@ export const PhysicsTags = () => {
   return (
     <div
       ref={containerRef}
-      className="hidden xl:block absolute inset-y-16 right-0 w-[46vw] z-10 cursor-pointer"
+      className="hidden xl:block absolute inset-y-16 right-0 w-[46vw] z-10 cursor-pointer overflow-hidden"
+      style={{
+        maskImage: "linear-gradient(to bottom, transparent 0%, black 8%, black 88%, transparent 100%)",
+        WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 8%, black 88%, transparent 100%)",
+      }}
       title="Click to toss the stack"
     >
       {chips.map((c, i) => (
