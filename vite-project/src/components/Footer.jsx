@@ -7,13 +7,18 @@ export const Footer = () => {
         © {new Date().getFullYear()} Luis Iglesias — designed &amp; built by
         hand, no template.
       </p>
-      <a
-        href="#hero"
-        aria-label="Back to top"
-        className="p-2 rounded-full border border-border hover:border-primary hover:text-primary transition-colors"
-      >
-        <ArrowUp size={16} />
-      </a>
+      <div className="flex items-center gap-4">
+        <a href="/privacy" className="hover:text-primary transition-colors">
+          Privacy Policy
+        </a>
+        <a
+          href="#hero"
+          aria-label="Back to top"
+          className="p-2 rounded-full border border-border hover:border-primary hover:text-primary transition-colors"
+        >
+          <ArrowUp size={16} />
+        </a>
+      </div>
     </footer>
   );
 };

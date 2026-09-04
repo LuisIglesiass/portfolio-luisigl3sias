@@ -1,0 +1,4 @@
+Contact: mailto:lluis.igl3sias@gmail.com
+Expires: 2027-09-04T00:00:00.000Z
+Preferred-Languages: en, de, es
+Canonical: https://www.luisiglesias.dev/.well-known/security.txt

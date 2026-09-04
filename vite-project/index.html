@@ -2,17 +2,123 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/fav.ico" />
+
+    <!-- Icons -->
+    <link rel="icon" href="/fav.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Luis Iglesias — Webentwickler in Hamburg. Nuxt, Vue, WordPress und Tailwind. Gründer von Iglesias Web Agency." />
     <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f8f6f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0e11" media="(prefers-color-scheme: dark)" />
+
+    <meta name="description" content="Luis Iglesias — Webentwickler in Hamburg. Nuxt, Vue, WordPress und Tailwind. Gründer von Iglesias Web Agency." />
+    <link rel="canonical" href="https://www.luisiglesias.dev/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Luis Iglesias" />
+    <meta property="og:title" content="Luis Iglesias — Software & Web Developer" />
+    <meta property="og:description" content="Webentwickler in Hamburg. Nuxt, Vue, WordPress und Tailwind. Gründer von Iglesias Web Agency." />
+    <meta property="og:url" content="https://www.luisiglesias.dev/" />
+    <meta property="og:image" content="https://www.luisiglesias.dev/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Luis Iglesias — Software & Web Developer" />
+    <meta name="twitter:description" content="Webentwickler in Hamburg. Nuxt, Vue, WordPress und Tailwind. Gründer von Iglesias Web Agency." />
+    <meta name="twitter:image" content="https://www.luisiglesias.dev/og-image.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Luis Iglesias",
+        "jobTitle": "Software & Web Developer",
+        "url": "https://www.luisiglesias.dev/",
+        "image": "https://www.luisiglesias.dev/og-image.png",
+        "email": "mailto:lluis.igl3sias@gmail.com",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "FLOW4 Webdesign UG & Co. KG"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Hamburg",
+          "addressCountry": "DE"
+        },
+        "sameAs": [
+          "https://www.linkedin.com/in/luis-iglesias-ab8068243/",
+          "https://www.instagram.com/lluis.iglesias",
+          "https://github.com/LuisIglesiass"
+        ]
+      }
+    </script>
+
     <title>Luis Iglesias — Software &amp; Web Developer</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!--
+        Static shell: rendered before React hydrates, replaced the
+        instant it mounts. Exists so crawlers/tools that only read raw
+        HTML (no JS execution) still find a real h1, semantic
+        landmarks, and working internal links instead of an empty
+        <div>. Also doubles as the page real no-JS users see.
+      -->
+      <a href="#main-content" class="sr-only focus:not-sr-only">Skip to main content</a>
+      <header>
+        <nav aria-label="Primary">
+          <a href="#hero">Luis Iglesias</a>
+          <a href="#about">About</a>
+          <a href="#experience">Experience</a>
+          <a href="#skills">Skills</a>
+          <a href="#projects">Work</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </header>
+      <main id="main-content">
+        <h1>Luis Iglesias — Software &amp; Web Developer</h1>
+        <p>
+          Webentwickler at FLOW4 Webdesign, building with Nuxt and Vue.
+          Founder of Iglesias Web Agency. Based in Hamburg, Germany,
+          working remote.
+        </p>
+        <p>
+          <a href="#projects">View selected work</a> ·
+          <a href="/CVLuisIglesias.pdf">Download CV</a> ·
+          <a href="#contact">Get in touch</a>
+        </p>
+      </main>
+      <footer>
+        <p>© 2026 Luis Iglesias</p>
+        <a href="/privacy">Privacy Policy</a>
+      </footer>
+    </div>
+
+    <noscript>
+      <!-- Deliberately not an h1 — the static shell above already
+           carries the page's one h1; a second one here (even inside
+           noscript) would double-count for tools that just parse the
+           raw HTML without honoring noscript's display semantics. -->
+      <div style="padding:2rem;font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;">
+        <p><strong>Luis Iglesias — Software &amp; Web Developer</strong></p>
+        <p>This site works best with JavaScript enabled. You can still reach me directly:</p>
+        <p><a href="mailto:lluis.igl3sias@gmail.com">lluis.igl3sias@gmail.com</a></p>
+        <p><a href="/CVLuisIglesias.pdf">Download CV (PDF)</a></p>
+      </div>
+    </noscript>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
