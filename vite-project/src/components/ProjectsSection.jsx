@@ -206,12 +206,13 @@ export const ProjectsSection = () => {
 
       <div className="container px-6 md:px-12 mt-10">
         <a
-          className="btn-outline w-fit inline-flex"
+          className="btn-outline w-fit inline-flex group"
           target="_blank"
           rel="noreferrer"
           href="https://github.com/LuisIglesiass"
         >
-          See everything on GitHub <ArrowUpRight size={15} />
+          See everything on GitHub
+          <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </a>
       </div>
     </section>

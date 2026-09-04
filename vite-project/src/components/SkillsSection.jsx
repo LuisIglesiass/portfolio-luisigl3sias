@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "../lib/utils";
 import { RevealText } from "./RevealText";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const skills = [
   { name: "Nuxt.js", category: "frontend" },
@@ -33,10 +37,50 @@ const categories = ["all", "frontend", "cms & backend", "tools"];
 
 export const SkillsSection = () => {
   const [activeCategory, setActiveCategory] = useState("all");
+  const gridRef = useRef(null);
 
   const filteredSkills = skills.filter(
     (skill) => activeCategory === "all" || skill.category === activeCategory
   );
+
+  // Same tween runs both the first scroll-in reveal and every filter
+  // switch: ScrollTrigger fires immediately if the grid is already in
+  // view (true every time a filter button is clicked, since the user
+  // has to be looking at the section to click it), so one code path
+  // covers both without a separate "has this played yet" flag. Scale
+  // instead of the site's usual slide-up, on purpose — chips settling
+  // into place reads differently from a heading or a card.
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    const items = grid.querySelectorAll("[data-skill]");
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(items, { opacity: 1, scale: 1 });
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        items,
+        { opacity: 0, scale: 0.9 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.4,
+          ease: "power2.out",
+          stagger: 0.02,
+          scrollTrigger: {
+            trigger: grid,
+            start: "top 96%",
+            once: true,
+          },
+        }
+      );
+    }, grid);
+
+    return () => ctx.revert();
+  }, [activeCategory]);
 
   return (
     <section id="skills" className="py-28 px-6 md:px-12 relative">
@@ -61,11 +105,12 @@ export const SkillsSection = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {filteredSkills.map((skill) => (
             <div
               key={skill.name}
-              className="rounded-xl border border-border bg-card px-4 py-4 text-center card-hover"
+              data-skill
+              className="rounded-xl border border-border bg-card px-4 py-4 text-center card-hover opacity-0"
             >
               <span className="font-mono text-sm">{skill.name}</span>
             </div>

@@ -47,8 +47,9 @@ export const HeroSection = () => {
 
         {/* CTAs */}
         <div className="mt-10 flex flex-wrap items-center gap-4 opacity-0 animate-fade-in-delay-4">
-          <a href="#projects" className="btn-solid">
-            View the work <ArrowUpRight size={15} />
+          <a href="#projects" className="btn-solid group">
+            View the work
+            <ArrowUpRight size={15} className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
           <a href="/CVLuisIglesias.pdf" download className="btn-outline">
             Download CV
