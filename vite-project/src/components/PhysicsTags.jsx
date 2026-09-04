@@ -24,12 +24,11 @@ const VARIANTS = ["solid", "outline", "solid", "outline", "ghost"];
  * to resettle. Big, autonomous, and obvious from the moment the hero
  * loads — no hover required to notice it.
  *
- * Matter.js is loaded on demand (not a static import) and the whole
- * simulation is skipped below the `xl` breakpoint where this is
- * `hidden` anyway — no reason to ship/parse/run a physics engine on
- * mobile just to render nothing. Both matter for Total Blocking Time:
- * a smaller synchronous main bundle, and no wasted setup work on the
- * majority of visits.
+ * Matter.js is loaded on demand (not a static import), so it never
+ * adds to the main bundle regardless of device. On `xl`+ it sits in
+ * the hero's empty right column; below that there's no such gap, so
+ * it becomes a full-width band along the bottom of the hero instead,
+ * sitting behind the text (z-0) so it never competes with it.
  */
 export const PhysicsTags = () => {
   const containerRef = useRef(null);
@@ -38,7 +37,6 @@ export const PhysicsTags = () => {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-    if (window.innerWidth < 1280) return; // matches the `xl:` breakpoint this is shown at
 
     let cancelled = false;
     let cleanup = () => {};
@@ -191,7 +189,7 @@ export const PhysicsTags = () => {
   return (
     <div
       ref={containerRef}
-      className="hidden xl:block absolute inset-y-16 right-0 w-[46vw] z-10 cursor-pointer overflow-hidden"
+      className="absolute inset-x-4 bottom-4 h-[32vh] z-0 xl:inset-x-auto xl:inset-y-16 xl:bottom-auto xl:right-0 xl:h-auto xl:w-[46vw] xl:z-10 cursor-pointer overflow-hidden"
       style={{
         maskImage: "linear-gradient(to bottom, transparent 0%, black 8%, black 88%, transparent 100%)",
         WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 8%, black 88%, transparent 100%)",
