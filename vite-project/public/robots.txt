@@ -1,4 +1,44 @@
 User-agent: *
 Allow: /
 
+# Explicit allow rules for AI/agent crawlers — this is a portfolio site
+# that wants to be discoverable and citable by AI answer engines, so
+# nothing here is blocked by default.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Content Signals (draft spec, content-signals.org) — usage preferences
+# for AI crawlers layered on top of the Allow rules above:
+#   search    — may be used to answer live search/agent queries
+#   ai-input  — may be retrieved at query time (RAG / browsing tools)
+#   ai-train  — may NOT be used to train third-party models
+Content-Signal: search=yes, ai-input=yes, ai-train=no
+
 Sitemap: https://www.luisiglesias.dev/sitemap.xml

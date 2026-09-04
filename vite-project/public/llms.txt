@@ -1,0 +1,31 @@
+# Luis Iglesias
+
+> Software & Web Developer based in Hamburg, Germany. Builds with Nuxt.js, Vue.js, WordPress and Tailwind CSS at FLOW4 Webdesign, and runs his own studio, Iglesias Web Agency, on the side.
+
+## Pages
+
+- [Home](https://www.luisiglesias.dev/): Portfolio — about, career history, stack, selected work, contact.
+- [Privacy Policy](https://www.luisiglesias.dev/privacy): What data this site does (and doesn't) collect.
+- [Full content](https://www.luisiglesias.dev/llms-full.txt): Complete page content in Markdown.
+
+## Experience
+
+- Webentwickler at FLOW4 Webdesign UG & Co. KG (Jan 2026–present, full-time, remote): Nuxt.js, Vue.js, WordPress, Strapi, Tailwind CSS, TypeScript.
+- Entwickler at Re:frame e.V. (Sept 2024–Oct 2025, freelance): Python, OpenStreetMap, Wikidata, geodata integration.
+- Fachinformatiker für Anwendungsentwicklung at Kühne+Nagel (Aug 2022–Jul 2025, Ausbildung): Java, Spring Boot, Angular, Git, Scrum.
+
+## Selected work
+
+- [AI Job Assistant](https://ai-job-application-assistant-eta.vercel.app/): CV-to-job match scoring and AI-generated cover letters (Nuxt 3, TypeScript, DeepSeek AI).
+- [Smart Budget Planner](https://smart-budget-planner-jet.vercel.app/): Personal finance and budget tracking app (React, Tailwind CSS).
+- [Aesthetic Art Gallery](https://aesthetic-art-gallery.vercel.app/): Minimalist digital art gallery (Nuxt, GSAP).
+- [Tailwind UI Kit](https://my-ui-kit-ten.vercel.app/): Reusable component library (React, Tailwind CSS).
+- [Smart Energy](https://smart-energy-2e28tkmmo-luis-iglesias-projects.vercel.app): CO2/energy tracking dashboard (Next.js, MongoDB).
+- More projects: https://github.com/LuisIglesiass
+
+## Contact
+
+- Email: lluis.igl3sias@gmail.com
+- LinkedIn: https://www.linkedin.com/in/luis-iglesias-ab8068243/
+- GitHub: https://github.com/LuisIglesiass
+- Location: Hamburg / Winsen (Luhe), Germany — open to remote and freelance work.
