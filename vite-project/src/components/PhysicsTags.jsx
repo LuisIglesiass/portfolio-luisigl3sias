@@ -172,6 +172,12 @@ export const PhysicsTags = () => {
         Composite.clear(engine.world, false);
         Engine.clear(engine);
       };
+    }).catch((err) => {
+      // Without this, a failed dynamic import (e.g. a dev-server that
+      // hasn't pre-bundled matter-js yet on a cold start) fails as a
+      // silent unhandled rejection — nothing renders and nothing in
+      // the console explains why.
+      console.error("PhysicsTags: failed to load matter-js", err);
     });
 
     return () => {
