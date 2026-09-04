@@ -19,12 +19,12 @@ export const useReveal = () => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         el,
-        { opacity: 0, y: 32 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
-          ease: "power4.out",
+          duration: 0.5,
+          ease: "power3.out",
           scrollTrigger: {
             trigger: el,
             start: "top 96%",
