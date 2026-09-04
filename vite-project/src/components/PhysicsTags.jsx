@@ -45,10 +45,6 @@ export const PhysicsTags = () => {
 
     const engine = Engine.create();
     engine.gravity.y = 1;
-    // Lets tags that have settled stop being actively simulated instead
-    // of endlessly micro-bouncing against a wall/each other — without
-    // this, a bouncy wall can look like jitter rather than a real rest.
-    engine.enableSleeping = true;
 
     const bodies = TAGS.map((label, i) => {
       const w = Math.ceil(measurer.measureText(label).width) + 30;
