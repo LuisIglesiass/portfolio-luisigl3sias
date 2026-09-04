@@ -13,8 +13,16 @@ const navItems = [
   { id: "contact", label: "Contact" },
 ];
 
+// Hoisted so it's the same array reference on every render. Passing a
+// fresh `navItems.map(...)` inline here made useActiveSection's effect
+// dependency change on every render (since setActive itself triggers
+// a re-render), tearing down and rebuilding the IntersectionObserver
+// on every single active-section change — the flicker/lag the nav
+// highlight showed.
+const navIds = navItems.map((n) => n.id);
+
 export const Navbar = () => {
-  const active = useActiveSection(navItems.map((n) => n.id));
+  const active = useActiveSection(navIds);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
