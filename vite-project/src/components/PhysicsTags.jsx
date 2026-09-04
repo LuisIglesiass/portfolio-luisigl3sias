@@ -195,7 +195,7 @@ export const PhysicsTags = () => {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-x-4 bottom-4 h-[32vh] z-0 xl:inset-x-auto xl:inset-y-16 xl:bottom-auto xl:right-0 xl:h-auto xl:w-[46vw] xl:z-10 cursor-pointer overflow-hidden"
+      className="absolute inset-x-4 bottom-4 h-[32vh] z-0 xl:inset-x-auto xl:inset-y-16 xl:right-0 xl:h-auto xl:w-[46vw] xl:z-10 cursor-pointer overflow-hidden"
       style={{
         maskImage: "linear-gradient(to bottom, transparent 0%, black 8%, black 88%, transparent 100%)",
         WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 8%, black 88%, transparent 100%)",
