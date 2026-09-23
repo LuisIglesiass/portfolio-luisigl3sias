@@ -12,7 +12,7 @@ export const Footer = () => {
       </p>
       <div className="flex flex-wrap items-center gap-4">
         <a href="/privacy" className="hover:text-primary transition-colors">
-          Privacy Policy
+          Privacy Policy (Datenschutz)
         </a>
         <a href="/sitemap.xml" className="hover:text-primary transition-colors">
           Sitemap
