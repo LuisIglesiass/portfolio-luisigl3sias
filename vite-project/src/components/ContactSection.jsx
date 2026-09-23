@@ -1,9 +1,13 @@
 import { Instagram, Linkedin, MapPin, ArrowUpRight } from "lucide-react";
 import { useReveal } from "@/hooks/use-reveal";
+import { useMagnetic } from "@/hooks/use-magnetic";
 import { RevealText } from "./RevealText";
 
 export const ContactSection = () => {
   const ref = useReveal();
+  const magneticEmail = useMagnetic(0.12);
+  const magneticLinkedIn = useMagnetic(0.5);
+  const magneticInstagram = useMagnetic(0.5);
 
   return (
     <section id="contact" className="py-32 px-6 md:px-12 relative bg-secondary/30">
@@ -18,6 +22,7 @@ export const ContactSection = () => {
               to new opportunities.
             </p>
             <a
+              ref={magneticEmail}
               href="mailto:lluis.igl3sias@gmail.com"
               className="group font-display text-3xl sm:text-5xl lg:text-6xl inline-flex items-center gap-4 hover:text-primary transition-colors duration-300 break-all"
             >
@@ -33,6 +38,7 @@ export const ContactSection = () => {
             </div>
             <div className="flex gap-4">
               <a
+                ref={magneticLinkedIn}
                 href="https://www.linkedin.com/in/luis-iglesias-ab8068243/"
                 target="_blank"
                 rel="noreferrer"
@@ -42,6 +48,7 @@ export const ContactSection = () => {
                 <Linkedin size={18} />
               </a>
               <a
+                ref={magneticInstagram}
                 href="https://www.instagram.com/lluis.iglesias?igsh=ZWl1NHg1dm1vMmJ3&utm_source=qr"
                 target="_blank"
                 rel="noreferrer"

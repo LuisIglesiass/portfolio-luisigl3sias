@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import gsap from "gsap";
 import { cn } from "@/lib/utils";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { ThemeToggle } from "./ThemeToggle";
@@ -25,6 +26,40 @@ export const Navbar = () => {
   const active = useActiveSection(navIds);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navListRef = useRef(null);
+  const indicatorRef = useRef(null);
+  const itemRefs = useRef({});
+
+  // Morphing nav pill: one shared indicator slides + resizes to sit
+  // behind whichever link is active, instead of each link owning its
+  // own underline. Recomputed on every active change and on resize,
+  // since the pill's target rect depends on live layout.
+  useEffect(() => {
+    const list = navListRef.current;
+    const indicator = indicatorRef.current;
+    const activeEl = itemRefs.current[active];
+    if (!list || !indicator || !activeEl) return;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const position = (animate) => {
+      const listRect = list.getBoundingClientRect();
+      const activeRect = activeEl.getBoundingClientRect();
+      const x = activeRect.left - listRect.left;
+      const width = activeRect.width;
+
+      if (!animate || reduced) {
+        gsap.set(indicator, { x, width, opacity: 1 });
+        return;
+      }
+      gsap.to(indicator, { x, width, opacity: 1, duration: 0.5, ease: "power3.out" });
+    };
+
+    position(true);
+    const onResize = () => position(false);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [active]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -62,10 +97,22 @@ export const Navbar = () => {
         </a>
 
         {/* desktop nav */}
-        <div className="hidden md:flex items-center gap-8 font-mono text-xs tracking-[0.08em]">
+        <div
+          ref={navListRef}
+          className="relative hidden md:flex items-center gap-8 font-mono text-xs tracking-[0.08em]"
+        >
+          <span
+            ref={indicatorRef}
+            aria-hidden="true"
+            className="absolute left-0 -bottom-0.5 h-px bg-primary opacity-0"
+            style={{ willChange: "transform, width" }}
+          />
           {navItems.map((item) => (
             <a
               key={item.id}
+              ref={(el) => {
+                itemRefs.current[item.id] = el;
+              }}
               href={`#${item.id}`}
               aria-current={active === item.id ? "true" : undefined}
               className={cn(
@@ -76,12 +123,6 @@ export const Navbar = () => {
               )}
             >
               {item.label}
-              <span
-                className={cn(
-                  "absolute left-0 -bottom-0.5 h-px bg-primary transition-all duration-300",
-                  active === item.id ? "w-full" : "w-0"
-                )}
-              />
             </a>
           ))}
         </div>

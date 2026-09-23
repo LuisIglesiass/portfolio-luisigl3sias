@@ -3,6 +3,7 @@ import { ArrowUpRight, Github, Briefcase } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useReveal } from "@/hooks/use-reveal";
+import { useMagnetic } from "@/hooks/use-magnetic";
 import { RevealText } from "./RevealText";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -122,6 +123,7 @@ const projects = [
 
 const ProjectCard = ({ project, index }) => {
   const ref = useReveal();
+  const cardRef = useRef(null);
   const imgRef = useRef(null);
 
   useEffect(() => {
@@ -148,11 +150,58 @@ const ProjectCard = ({ project, index }) => {
     return () => ctx.revert();
   }, []);
 
+  // Cards tilt toward the cursor and carry a spotlight glow that tracks
+  // it — a light 3D-depth cue rather than a flat hover state. Desktop
+  // (fine pointer) only; a touch tap has no cursor position to tilt
+  // toward.
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    gsap.set(card, { transformPerspective: 900 });
+    const rotateX = gsap.quickTo(card, "rotateX", { duration: 0.5, ease: "power3.out" });
+    const rotateY = gsap.quickTo(card, "rotateY", { duration: 0.5, ease: "power3.out" });
+
+    const onMove = (e) => {
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width;
+      const py = (e.clientY - rect.top) / rect.height;
+      rotateY((px - 0.5) * 10);
+      rotateX((0.5 - py) * 8);
+      card.style.setProperty("--spot-x", `${px * 100}%`);
+      card.style.setProperty("--spot-y", `${py * 100}%`);
+    };
+    const onLeave = () => {
+      rotateX(0);
+      rotateY(0);
+    };
+
+    card.addEventListener("mousemove", onMove);
+    card.addEventListener("mouseleave", onLeave);
+    return () => {
+      card.removeEventListener("mousemove", onMove);
+      card.removeEventListener("mouseleave", onLeave);
+    };
+  }, []);
+
   return (
     <article
-      ref={ref}
-      className="rail-item w-[82vw] sm:w-[420px] rounded-2xl border border-border bg-card overflow-hidden group card-hover"
+      ref={(el) => {
+        ref.current = el;
+        cardRef.current = el;
+      }}
+      className="rail-item relative w-[82vw] sm:w-[420px] rounded-2xl border border-border bg-card overflow-hidden group card-hover"
     >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        style={{
+          background:
+            "radial-gradient(280px circle at var(--spot-x, 50%) var(--spot-y, 50%), hsl(var(--primary) / 0.12), transparent 70%)",
+        }}
+      />
       <div className="h-56 overflow-hidden relative">
         <div ref={imgRef} className="w-full h-[130%]">
           <img
@@ -227,6 +276,8 @@ const ProjectCard = ({ project, index }) => {
 };
 
 export const ProjectsSection = () => {
+  const magneticGithub = useMagnetic(0.3);
+
   return (
     <section id="projects" className="py-28 relative">
       <div className="container px-6 md:px-12">
@@ -245,6 +296,7 @@ export const ProjectsSection = () => {
 
       <div className="container px-6 md:px-12 mt-10">
         <a
+          ref={magneticGithub}
           className="btn-outline w-fit inline-flex group"
           target="_blank"
           rel="noreferrer"

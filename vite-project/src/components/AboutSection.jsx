@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RevealText } from "./RevealText";
+import { useMagnetic } from "@/hooks/use-magnetic";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,6 +26,8 @@ const Tile = ({ className = "", children }) => (
 
 export const AboutSection = () => {
   const gridRef = useRef(null);
+  const magneticPrimary = useMagnetic(0.3);
+  const magneticSecondary = useMagnetic(0.3);
 
   // The bento tiles sit at different heights (the "4 languages" tile is
   // a full row lower than the others), so revealing each one off its
@@ -88,10 +91,10 @@ export const AboutSection = () => {
               </p>
             </div>
             <div className="flex flex-wrap gap-4 pt-8">
-              <a href="#contact" className="btn-solid">
+              <a ref={magneticPrimary} href="#contact" className="btn-solid">
                 Get in touch
               </a>
-              <a href="/CVLuisIglesias.pdf" download className="btn-outline">
+              <a ref={magneticSecondary} href="/CVLuisIglesias.pdf" download className="btn-outline">
                 Download CV
               </a>
             </div>

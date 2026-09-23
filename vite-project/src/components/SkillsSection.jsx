@@ -38,10 +38,36 @@ const categories = ["all", "frontend", "cms & backend", "tools"];
 export const SkillsSection = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const gridRef = useRef(null);
+  const filterListRef = useRef(null);
+  const filterIndicatorRef = useRef(null);
+  const filterItemRefs = useRef({});
 
   const filteredSkills = skills.filter(
     (skill) => activeCategory === "all" || skill.category === activeCategory
   );
+
+  // Same morphing-pill technique as the navbar's active-link indicator:
+  // one shared pill slides + resizes behind whichever filter is active,
+  // rather than each button owning its own background transition.
+  useEffect(() => {
+    const list = filterListRef.current;
+    const indicator = filterIndicatorRef.current;
+    const activeEl = filterItemRefs.current[activeCategory];
+    if (!list || !indicator || !activeEl) return;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const listRect = list.getBoundingClientRect();
+    const activeRect = activeEl.getBoundingClientRect();
+    const x = activeRect.left - listRect.left;
+    const y = activeRect.top - listRect.top;
+    const { width, height } = activeRect;
+
+    if (reduced) {
+      gsap.set(indicator, { x, y, width, height, opacity: 1 });
+      return;
+    }
+    gsap.to(indicator, { x, y, width, height, opacity: 1, duration: 0.4, ease: "power3.out" });
+  }, [activeCategory]);
 
   // Same tween runs both the first scroll-in reveal and every filter
   // switch: ScrollTrigger fires immediately if the grid is already in
@@ -88,15 +114,27 @@ export const SkillsSection = () => {
         <p className="index-number mb-3">TOOLKIT</p>
         <RevealText as="h2" text="Stack & tools" className="font-display text-3xl md:text-4xl mb-10 block" />
 
-        <div className="flex flex-wrap gap-2 mb-10 font-mono text-xs">
+        <div
+          ref={filterListRef}
+          className="relative flex flex-wrap gap-2 mb-10 font-mono text-xs"
+        >
+          <span
+            ref={filterIndicatorRef}
+            aria-hidden="true"
+            className="absolute left-0 top-0 rounded-full bg-primary opacity-0"
+            style={{ willChange: "transform, width, height" }}
+          />
           {categories.map((category) => (
             <button
               key={category}
+              ref={(el) => {
+                filterItemRefs.current[category] = el;
+              }}
               onClick={() => setActiveCategory(category)}
               className={cn(
-                "px-4 py-2 rounded-full border capitalize transition-colors duration-300",
+                "relative px-4 py-2 rounded-full border capitalize transition-colors duration-300",
                 activeCategory === category
-                  ? "bg-primary text-primary-foreground border-primary"
+                  ? "text-primary-foreground border-primary"
                   : "border-border text-muted-foreground hover:border-primary hover:text-primary"
               )}
             >
