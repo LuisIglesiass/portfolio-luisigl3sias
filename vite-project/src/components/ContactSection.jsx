@@ -77,6 +77,10 @@ export const ContactSection = () => {
         <footer className="footer-bar kicker">
           <span>© {new Date().getFullYear()} Luis Iglesias — designed &amp; built by hand</span>
           <nav>
+            <a href="#about">About</a>
+            <a href="#experience">Experience</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Work</a>
             <a href="/privacy">Privacy (Datenschutz)</a>
             <a href="/sitemap.xml">Sitemap</a>
             <a href="/llms.txt" title="Machine-readable site index for AI agents">llms.txt</a>

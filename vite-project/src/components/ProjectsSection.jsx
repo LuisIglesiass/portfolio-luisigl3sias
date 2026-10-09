@@ -43,11 +43,13 @@ export const ProjectsSection = () => {
       const counter = root.querySelector("[data-current]");
       const slides = gsap.utils.toArray(".works-slide", root);
 
-      const intro = 0.8; // dark "WORKS." panel lifts away
-      const dwell = 0.9; // each project holds still
-      const move = 1.1; // wipe from one project to the next
+      const intro = 1.1; // dark "WORKS." panel lifts away
+      const dwell = 0.5; // each project holds briefly
+      const move = 1.2; // wipe from one project to the next
       const step = move + dwell;
-      const total = intro + dwell + (n - 1) * step;
+      const lead = intro * 0.45; // first dwell is short: the lift already shows motion
+      const total = intro + lead + (n - 1) * step;
+      const first = slides[0];
 
       // every slide after the first waits below, fully clipped
       gsap.set(slides.slice(1), { clipPath: "inset(100% 0% 0% 0%)" });
@@ -63,29 +65,45 @@ export const ProjectsSection = () => {
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: () => {
-            const t = tl.time() - intro - dwell - move * 0.5;
+            const t = tl.time() - intro - lead - move * 0.5;
             const i = t < 0 ? 0 : Math.min(n - 1, Math.floor(t / step) + 1);
             counter.textContent = pad(i + 1);
           },
         },
       });
 
-      tl.to(turnover, { yPercent: -101, duration: intro, ease: "power3.inOut" }, 0);
-      tl.fromTo(inner, { y: 48, opacity: 0 }, { y: 0, opacity: 1, duration: intro * 0.8, ease: "power2.out" }, 0.1);
+      // Lift: the panel rises while its giant title drifts slower (parallax) and
+      // the first project assembles underneath — something is always moving, so
+      // the hand-off to the gallery never feels like it stalls.
+      tl.to(turnover, { yPercent: -101, duration: intro, ease: "power2.inOut" }, 0);
+      tl.to(".works-turnover__title", { yPercent: 38, duration: intro, ease: "power2.inOut" }, 0);
+      tl.fromTo(inner, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: intro * 0.7, ease: "power2.out" }, intro * 0.1);
+      tl.fromTo(
+        first.querySelector(".works-art__frame img"),
+        { yPercent: 12, scale: 1.06 },
+        { yPercent: 0, scale: 1, duration: intro, ease: "power2.out" },
+        intro * 0.15
+      );
+      tl.fromTo(
+        first.querySelectorAll(".works-card-heading, .works-card-description, .works-card-links, .works-card-stack"),
+        { y: 36, opacity: 0 },
+        { y: 0, opacity: 1, duration: intro * 0.7, ease: "power2.out", stagger: 0.06 },
+        intro * 0.3
+      );
 
       slides.slice(1).forEach((slide, k) => {
-        const at = intro + dwell + k * step;
+        const at = intro + lead + k * step;
         const prev = slides[k];
         const img = slide.querySelector(".works-art__frame img");
         const copy = slide.querySelectorAll(".works-card-heading, .works-card-description, .works-card-links, .works-card-stack");
-        tl.to(slide, { clipPath: "inset(0% 0% 0% 0%)", duration: move, ease: "power3.inOut" }, at);
+        tl.to(slide, { clipPath: "inset(0% 0% 0% 0%)", duration: move, ease: "power2.inOut" }, at);
         // outgoing slide drifts up slightly, incoming settles — gives the wipe depth
-        tl.to(prev, { yPercent: -7, duration: move, ease: "power3.inOut" }, at);
-        tl.fromTo(img, { yPercent: 14, scale: 1.06 }, { yPercent: 0, scale: 1, duration: move, ease: "power3.out" }, at);
-        tl.fromTo(copy, { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: move * 0.8, ease: "power3.out", stagger: 0.06 }, at + move * 0.25);
+        tl.to(prev, { yPercent: -6, duration: move, ease: "power2.inOut" }, at);
+        tl.fromTo(img, { yPercent: 12, scale: 1.05 }, { yPercent: 0, scale: 1, duration: move, ease: "power2.out" }, at);
+        tl.fromTo(copy, { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: move * 0.8, ease: "power2.out", stagger: 0.05 }, at + move * 0.2);
       });
 
-      tl.to(bar, { scaleX: 1, duration: total - intro - dwell }, intro + dwell * 0.5);
+      tl.to(bar, { scaleX: 1, duration: total - intro }, intro);
       tl.set({}, {}, total); // trailing dwell on the last project
     });
 

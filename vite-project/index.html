@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="is-booting">
   <head>
     <meta charset="UTF-8" />
 
@@ -9,6 +9,26 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Boot screen: match the dark intro so first paint never flashes cream or
+         the unstyled static shell below. Removed by App on mount. noscript
+         visitors get the readable shell instead. -->
+    <style>
+      html.is-booting, html.is-booting body { background: #0c0a09; }
+      html.is-booting #static-shell { visibility: hidden; }
+    </style>
+    <noscript>
+      <style>
+        html.is-booting, html.is-booting body { background: #f5f5f4; }
+        html.is-booting #static-shell { visibility: visible; }
+      </style>
+    </noscript>
+
+    <!-- Resource hints: fonts the intro and hero need on first paint -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/satoshi-variable.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/clash-display-variable.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/script.woff2" crossorigin />
+    <link rel="dns-prefetch" href="https://www.iglesias-web-agency.de" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light" />
@@ -89,6 +109,7 @@
   </head>
   <body>
     <div id="root">
+      <div id="static-shell">
       <!--
         Static shell: rendered before React hydrates, replaced the
         instant it mounts. Exists so crawlers/tools that only read raw
@@ -125,7 +146,11 @@
         <a href="/privacy">Privacy Policy (Datenschutzerklärung)</a>
         <a href="/sitemap.xml">Sitemap</a>
         <a href="/llms.txt">llms.txt</a>
+        <a href="/llms-full.txt">llms-full.txt</a>
+        <a href="/index.md">Markdown version</a>
+        <a href="/CVLuisIglesias.pdf">CV (PDF)</a>
       </footer>
+      </div>
     </div>
 
     <noscript>
