@@ -1123,10 +1123,6 @@ button {
 .works {
   background: var(--stone-100);
 }
-.works-pin {
-  position: relative;
-  background: var(--stone-100);
-}
 .works-turnover {
   position: relative;
   z-index: 3;
@@ -1135,7 +1131,7 @@ button {
   justify-content: space-between;
   gap: 48px;
   min-height: 70svh;
-  padding: 56px var(--pad-x) var(--pad-x);
+  padding: calc(var(--nav-h) + 24px) var(--pad-x) var(--pad-x);
   background: var(--stone-950);
   color: var(--stone-100);
 }
@@ -1157,14 +1153,8 @@ button {
   line-height: 0.85;
   font-size: clamp(64px, 20vw, 250px);
 }
-.works-turnover__title span {
-  color: var(--stone-400);
-}
 .works-turnover__title .dot {
   color: var(--accent);
-}
-.works-gallery {
-  position: relative;
 }
 .works-slide {
   --accent-p: var(--accent);
@@ -1290,23 +1280,40 @@ button {
 .works-slide:hover .works-art__disc {
   transform: translate(-6%, -6%) scale(1.08);
 }
+.works-turnover__title .count {
+  color: var(--stone-400);
+}
+.works-pin {
+  position: relative;
+  background: var(--stone-100);
+}
+.works-kicker,
+.works-footer,
+.works-heading-line,
 .works-progress {
   display: none;
 }
-@media (min-width: 900px) {
+.works-gallery {
+  position: relative;
+}
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .works-scroller {
+    height: calc(100svh * (1 + var(--steps) * 0.85));
+  }
   .works-pin {
+    position: sticky;
+    top: 0;
     height: 100svh;
     padding: calc(var(--nav-h) + 18px) var(--pad-x) 22px;
     overflow: hidden;
     display: flex;
     align-items: center;
   }
-  .works-turnover {
-    position: absolute;
-    inset: 0;
-    min-height: 0;
-    padding: calc(var(--nav-h) + 16px) var(--pad-x) var(--pad-x);
-    will-change: transform;
+  .works-slide:not(:first-child) {
+    clip-path: inset(100% 0% 0% 0%);
+  }
+  .works-art__frame img {
+    transition: none; /* transforms are written every frame; a CSS transition would smear them */
   }
   .works-inner {
     display: grid;
@@ -1326,6 +1333,16 @@ button {
     font-size: 11px;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+  }
+  .works-heading-line {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 10px 0 14px;
+  }
+  .works-heading-line .section-title {
+    font-size: clamp(40px, 5.4vw, 96px);
   }
   .works-gallery {
     overflow: hidden;
@@ -1361,21 +1378,6 @@ button {
     background: var(--stone-950);
     transform: scaleX(0);
     transform-origin: left;
-  }
-}
-.works-heading-line {
-  display: none;
-}
-@media (min-width: 900px) {
-  .works-heading-line {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 24px;
-    padding: 10px 0 14px;
-  }
-  .works-heading-line .section-title {
-    font-size: clamp(40px, 5.4vw, 96px);
   }
 }
 
@@ -1643,37 +1645,3 @@ button {
   }
 }
 
-/* Reduced motion: no pinning — works become a plain stacked list. */
-@media (prefers-reduced-motion: reduce) {
-  .works-pin {
-    display: block;
-    height: auto;
-    padding: 0;
-    overflow: visible;
-  }
-  .works-turnover {
-    position: relative;
-    min-height: 70svh;
-  }
-  .works-inner {
-    display: block;
-    height: auto;
-  }
-  .works-track,
-  .works-slide {
-    position: relative;
-    inset: auto;
-  }
-  .works-slide {
-    grid-template-columns: 1fr;
-  }
-  .works-art {
-    aspect-ratio: 4 / 3;
-  }
-  .works-progress,
-  .works-heading-line,
-  .works-kicker,
-  .works-footer {
-    display: none;
-  }
-}

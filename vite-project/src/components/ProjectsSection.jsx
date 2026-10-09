@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { useGsap, gsap, ScrollTrigger } from "@/hooks/use-gsap";
+import { useGsap, gsap } from "@/hooks/use-gsap";
 import { projects, FEATURED } from "@/data/projects";
 
 const featured = projects.slice(0, FEATURED);
@@ -22,9 +22,8 @@ const Links = ({ p }) => (
 );
 
 /**
- * Desktop: the section pins. A dark "WORKS" turnover panel lifts away, then the
- * track of project slides scrolls vertically (snapping to each) while a hairline
- * progress bar fills. Below 900px it degrades to a normal stacked list.
+ * Works: a dark "WORKS." band, then the featured projects as a normal
+ * scrolling list — each one reveals once as it enters the viewport.
  * Archive: remaining projects as rows; hovering one pulls a floating preview
  * that eases toward the cursor.
  */
@@ -35,88 +34,111 @@ export const ProjectsSection = () => {
   useGsap(ref, (mm) => {
     const root = ref.current;
 
+    // "WORKS." title lines rise out of their masks; the dark band's type drifts
+    // slower than the page as it scrolls away.
+    const tLines = root.querySelectorAll(".works-turnover__title .line-mask > span");
+    gsap.set(tLines, { yPercent: 108 });
+    gsap.to(tLines, {
+      yPercent: 0,
+      duration: 1.4,
+      ease: "expo.out",
+      stagger: 0.12,
+      scrollTrigger: { trigger: ".works-turnover", start: "top 70%", once: true },
+    });
+    gsap.to(".works-turnover__title", {
+      yPercent: -14,
+      ease: "none",
+      scrollTrigger: { trigger: ".works-turnover", start: "top top", end: "bottom top", scrub: true },
+    });
+
+    // Desktop: the gallery is pinned with plain CSS `position: sticky` (the
+    // browser does the pinning, so there is no JS pin to drift or jitter). Every
+    // frame we read how far the tall wrapper has scrolled and render the whole
+    // gallery as a pure function of that single number — nothing is "played",
+    // so it can't desync, stall, batch-jump or depend on measurement timing.
     mm.add("(min-width: 900px)", () => {
       const n = featured.length;
-      const turnover = root.querySelector(".works-turnover");
-      const title = root.querySelector(".works-turnover__title");
-      const inner = root.querySelector(".works-inner");
+      const scroller = root.querySelector(".works-scroller");
+      const slides = gsap.utils.toArray(".works-slide", root);
       const bar = root.querySelector(".works-progress i");
       const counter = root.querySelector("[data-current]");
-      const slides = gsap.utils.toArray(".works-slide", root);
       const copyOf = (slide) =>
-        slide.querySelectorAll(".works-card-heading, .works-card-description, .works-card-links, .works-card-stack");
+        Array.from(slide.querySelectorAll(".works-card-heading, .works-card-description, .works-card-links, .works-card-stack"));
       const imgOf = (slide) => slide.querySelector(".works-art__frame img");
-      const targets = [turnover, title, inner, bar, ...slides, ...slides.flatMap((sl) => [imgOf(sl), ...copyOf(sl)])];
+      const parts = slides.map((slide) => ({ slide, img: imgOf(slide), copy: copyOf(slide) }));
 
-      // Stage 0 = dark "WORKS." panel, stage k = project k. Scroll only decides
-      // WHICH stage we're on; the transition itself is a timed tween, so it
-      // plays at one calm speed no matter how hard the wheel is flicked.
-      gsap.set(slides.slice(1), { clipPath: "inset(100% 0% 0% 0%)" });
-      gsap.set(inner, { opacity: 0, y: 40 });
-      gsap.set(slides.flatMap(copyOf), { opacity: 0, y: 28 });
-      gsap.set(bar, { scaleX: 0 });
+      const wipe = 0.78; // share of each step spent moving; the rest is a hold
+      const pad0 = (1 - wipe) / 2;
+      const inOut = gsap.parseEase("power2.inOut");
+      const out = gsap.parseEase("power2.out");
+      const clamp = (v) => Math.min(1, Math.max(0, v));
 
-      let stage = -1;
-      const go = (next, instant = false) => {
-        const prev = stage;
-        stage = next;
-        const k = instant ? 0 : 1;
-        const open = next >= 1;
-        const cur = next - 1;
-
-        gsap.to(turnover, { yPercent: open ? -101 : 0, duration: 1.3 * k, ease: "expo.inOut", overwrite: "auto" });
-        gsap.to(title, { yPercent: open ? 24 : 0, duration: 1.3 * k, ease: "expo.inOut", overwrite: "auto" });
-        gsap.to(inner, { opacity: open ? 1 : 0, y: open ? 0 : 40, duration: 0.9 * k, delay: open ? 0.45 * k : 0, ease: "power3.out", overwrite: "auto" });
-        gsap.to(bar, { scaleX: Math.max(0, cur) / (n - 1), duration: 1 * k, ease: "power3.inOut", overwrite: "auto" });
-        counter.textContent = pad(Math.max(0, cur) + 1);
-
-        slides.forEach((slide, j) => {
-          if (j > 0) {
-            gsap.to(slide, { clipPath: cur >= j ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)", duration: 1.2 * k, ease: "expo.inOut", overwrite: "auto" });
-          }
-          // slides already covered drift up a touch; gives the wipe some depth
-          gsap.to(slide, { yPercent: cur > j ? -5 : 0, duration: 1.2 * k, ease: "expo.inOut" });
-
-          const copy = copyOf(slide);
-          const img = imgOf(slide);
-          if (j === cur && j !== prev - 1) {
-            gsap.fromTo(img, { yPercent: 10, scale: 1.07 }, { yPercent: 0, scale: 1, duration: 1.6 * k, ease: "expo.out", overwrite: "auto", delay: 0.2 * k });
-            gsap.to(copy, { opacity: 1, y: 0, duration: 1 * k, ease: "power3.out", stagger: 0.07, delay: (open && prev < 1 ? 0.7 : 0.35) * k, overwrite: "auto" });
-          } else if (j > cur) {
-            gsap.to(copy, { opacity: 0, y: 28, duration: 0.5 * k, ease: "power2.in", overwrite: "auto" });
-          }
+      let last = -1;
+      let lastCount = "";
+      const render = (p) => {
+        const sPos = p * (n - 1);
+        parts.forEach((part, k) => {
+          if (k === 0) return;
+          const t = clamp((sPos - (k - 1) - pad0) / wipe);
+          const e = inOut(t);
+          const eo = out(t);
+          part.slide.style.clipPath = `inset(${((1 - e) * 100).toFixed(3)}% 0% 0% 0%)`;
+          parts[k - 1].slide.style.transform = `translate3d(0, ${(-5 * e).toFixed(3)}%, 0)`;
+          part.img.style.transform = `translate3d(0, ${(10 * (1 - eo)).toFixed(3)}%, 0) scale(${(1 + 0.07 * (1 - eo)).toFixed(4)})`;
+          part.copy.forEach((el, i) => {
+            const c = out(clamp((t - 0.35 - i * 0.05) / 0.55));
+            el.style.opacity = c.toFixed(3);
+            el.style.transform = `translate3d(0, ${(28 * (1 - c)).toFixed(2)}px, 0)`;
+          });
         });
+        const cnt = pad(Math.min(n, Math.round(sPos) + 1));
+        if (cnt !== lastCount) {
+          lastCount = cnt;
+          counter.textContent = cnt;
+        }
+        bar.style.transform = `scaleX(${p.toFixed(4)})`;
       };
 
-      const H = 0.08; // hysteresis: don't flip stages right on a boundary
-      ScrollTrigger.create({
-        trigger: root.querySelector(".works-pin"),
-        start: "top top",
-        end: () => "+=" + window.innerHeight * (n + 1) * 0.7,
-        pin: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        onRefresh: (self) => go(Math.min(n, Math.floor(self.progress * (n + 1))), true),
-        onUpdate: (self) => {
-          const raw = self.progress * (n + 1);
-          let next = stage;
-          if (raw >= stage + 1 + H) next = Math.min(n, Math.floor(raw - H));
-          else if (raw < stage - H) next = Math.max(0, Math.floor(raw + H));
-          if (next !== stage) go(next);
-        },
-      });
+      const frame = () => {
+        const r = scroller.getBoundingClientRect();
+        const span = r.height - window.innerHeight;
+        const p = span > 0 ? clamp(-r.top / span) : 0;
+        if (p !== last) {
+          last = p;
+          render(p);
+        }
+      };
+      render(0);
+      frame();
+      gsap.ticker.add(frame);
 
       return () => {
-        gsap.killTweensOf(targets);
-        gsap.set(targets, { clearProps: "transform,clipPath,opacity" });
+        gsap.ticker.remove(frame);
+        parts.forEach(({ slide, img, copy }) => {
+          slide.style.clipPath = "";
+          slide.style.transform = "";
+          img.style.transform = "";
+          copy.forEach((el) => {
+            el.style.opacity = "";
+            el.style.transform = "";
+          });
+        });
+        bar.style.transform = "";
       };
     });
 
-    // reveal on mobile where nothing is pinned
+    // Mobile: no pin, each project reveals once as it enters.
     mm.add("(max-width: 899px)", () => {
-      gsap.utils.toArray(".works-slide", root).forEach((s) =>
-        gsap.from(s, { opacity: 0, y: 40, duration: 0.9, ease: "power3.out", scrollTrigger: { trigger: s, start: "top 88%", once: true } })
-      );
+      gsap.utils.toArray(".works-slide", root).forEach((slide) => {
+        const art = slide.querySelector(".works-art");
+        const img = slide.querySelector(".works-art__frame img");
+        gsap.set(art, { clipPath: "inset(100% 0% 0% 0%)" });
+        gsap.set(img, { scale: 1.12 });
+        gsap
+          .timeline({ defaults: { ease: "expo.out" }, scrollTrigger: { trigger: slide, start: "top 80%", once: true } })
+          .to(art, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.3, ease: "expo.inOut" })
+          .to(img, { scale: 1, duration: 1.6 }, 0.1);
+      });
     });
 
     // archive rows draw in
@@ -155,23 +177,23 @@ export const ProjectsSection = () => {
 
   return (
     <section id="projects" ref={ref} className="works">
-      <div className="works-pin">
-        <div className="works-turnover" aria-hidden="true">
-          <div className="works-turnover__meta">
-            <span>(04) Selected work</span>
-            <span>2024 — 2026</span>
-          </div>
-          <h2 className="works-turnover__title">
-            Works<span className="dot">.</span>
-            <br />
-            <span>({pad(projects.length)})</span>
-          </h2>
-          <div className="works-turnover__footer">
-            <span>Scroll to explore</span>
-            <span>↓</span>
-          </div>
+      <div className="works-turnover" aria-hidden="true">
+        <div className="works-turnover__meta">
+          <span>(04) Selected work</span>
+          <span>2024 — 2026</span>
         </div>
+        <h2 className="works-turnover__title">
+          <span className="line-mask"><span>Works<span className="dot">.</span></span></span>
+          <span className="line-mask"><span className="count">({pad(projects.length)})</span></span>
+        </h2>
+        <div className="works-turnover__footer">
+          <span>Scroll to explore</span>
+          <span>↓</span>
+        </div>
+      </div>
 
+      <div className="works-scroller" style={{ "--steps": FEATURED - 1 }}>
+      <div className="works-pin">
         <div className="works-inner">
           <div>
             <div className="works-kicker">
@@ -237,6 +259,7 @@ export const ProjectsSection = () => {
             </div>
           </div>
         </div>
+      </div>
       </div>
 
       <div id="archive" className="archive">
