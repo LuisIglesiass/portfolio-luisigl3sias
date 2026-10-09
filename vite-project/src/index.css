@@ -102,6 +102,39 @@ button {
   outline-offset: 3px;
 }
 
+/* ---------- Scrollbar: slim ink thumb on a paper track, coral on hover ---------- */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--stone-100);
+  border-left: 1px solid var(--stone-300);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--stone-950);
+  border: 3px solid var(--stone-100); /* ring in the track colour = slim floating pill */
+  border-radius: 999px;
+  background-clip: padding-box;
+  min-height: 48px;
+  transition: background-color 0.4s;
+}
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+  background: var(--accent);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner {
+  background: var(--stone-100);
+}
+/* Firefox (and anything without the WebKit pseudo-elements) */
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--stone-950) var(--stone-100);
+  }
+}
+
 /* ---------- legacy helpers still used by Privacy / NotFound ---------- */
 @utility container {
   margin-inline: auto;
