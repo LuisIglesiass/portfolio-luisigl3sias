@@ -1,158 +1,113 @@
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { cn } from "../lib/utils";
-import { RevealText } from "./RevealText";
+import { useLayoutEffect, useRef, useState } from "react";
+import { useGsap, gsap, ScrollTrigger } from "@/hooks/use-gsap";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const skills = [
-  { name: "Nuxt.js", category: "frontend" },
-  { name: "Vue.js", category: "frontend" },
-  { name: "React", category: "frontend" },
-  { name: "Angular", category: "frontend" },
-  { name: "JavaScript", category: "frontend" },
-  { name: "TypeScript", category: "frontend" },
-  { name: "Tailwind CSS", category: "frontend" },
-  { name: "SCSS", category: "frontend" },
-  { name: "HTML5 / CSS", category: "frontend" },
-
-  { name: "WordPress", category: "cms & backend" },
-  { name: "Strapi", category: "cms & backend" },
-  { name: "Spring Boot", category: "cms & backend" },
-  { name: "Express", category: "cms & backend" },
-  { name: "MongoDB", category: "cms & backend" },
-  { name: "SQL", category: "cms & backend" },
-  { name: "Python", category: "cms & backend" },
-
-  { name: "Git / GitHub", category: "tools" },
-  { name: "Bitbucket", category: "tools" },
-  { name: "Figma", category: "tools" },
-  { name: "VS Code", category: "tools" },
-  { name: "Docker", category: "tools" },
-  { name: "Scrum / Kanban", category: "tools" },
+const groups = [
+  {
+    name: "Frontend",
+    items: ["Nuxt.js", "Vue.js", "React", "Angular", "JavaScript", "TypeScript", "Tailwind CSS", "SCSS", "HTML5 / CSS", "GSAP"],
+  },
+  {
+    name: "CMS & Backend",
+    items: ["WordPress", "Strapi", "Spring Boot", "Express", "MongoDB", "SQL", "Python"],
+  },
+  {
+    name: "Tools",
+    items: ["Git / GitHub", "Bitbucket", "Figma", "VS Code", "Docker", "Scrum / Kanban"],
+  },
 ];
 
-const categories = ["all", "frontend", "cms & backend", "tools"];
-
 export const SkillsSection = () => {
-  const [activeCategory, setActiveCategory] = useState("all");
-  const gridRef = useRef(null);
-  const filterListRef = useRef(null);
-  const filterIndicatorRef = useRef(null);
-  const filterItemRefs = useRef({});
+  const ref = useRef(null);
+  const [open, setOpen] = useState(0);
 
-  const filteredSkills = skills.filter(
-    (skill) => activeCategory === "all" || skill.category === activeCategory
-  );
+  // entrance: titles mask up, rules draw
+  useGsap(ref, () => {
+    const root = ref.current;
+    gsap.set(root.querySelectorAll(".skills__name"), { yPercent: 105 });
+    gsap.set(root.querySelectorAll(".skills__rule"), { scaleX: 0 });
+    root.querySelectorAll(".skills__item").forEach((item) => {
+      gsap
+        .timeline({ scrollTrigger: { trigger: item, start: "top 88%", once: true } })
+        .to(item.querySelector(".skills__name"), { yPercent: 0, duration: 1.1, ease: "power4.out" })
+        .to(item.querySelector(".skills__rule"), { scaleX: 1, duration: 1.2, ease: "power3.inOut" }, 0.1);
+    });
+  });
 
-  // Same morphing-pill technique as the navbar's active-link indicator:
-  // one shared pill slides + resizes behind whichever filter is active,
-  // rather than each button owning its own background transition.
-  useEffect(() => {
-    const list = filterListRef.current;
-    const indicator = filterIndicatorRef.current;
-    const activeEl = filterItemRefs.current[activeCategory];
-    if (!list || !indicator || !activeEl) return;
-
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const listRect = list.getBoundingClientRect();
-    const activeRect = activeEl.getBoundingClientRect();
-    const x = activeRect.left - listRect.left;
-    const y = activeRect.top - listRect.top;
-    const { width, height } = activeRect;
-
-    if (reduced) {
-      gsap.set(indicator, { x, y, width, height, opacity: 1 });
+  // accordion: plain effect (no gsap.context revert, which would snap the
+  // previous panel shut). One timeline per change — the outgoing group closes
+  // while the incoming one opens, so page height eases instead of jumping.
+  const first = useRef(true);
+  const tlRef = useRef(null);
+  useLayoutEffect(() => {
+    const items = ref.current.querySelectorAll(".skills__item");
+    if (first.current) {
+      first.current = false;
+      items.forEach((item, i) => gsap.set(item.querySelector(".skills__panel"), { height: i === open ? "auto" : 0 }));
       return;
     }
-    gsap.to(indicator, { x, y, width, height, opacity: 1, duration: 0.4, ease: "power3.out" });
-  }, [activeCategory]);
-
-  // Same tween runs both the first scroll-in reveal and every filter
-  // switch: ScrollTrigger fires immediately if the grid is already in
-  // view (true every time a filter button is clicked, since the user
-  // has to be looking at the section to click it), so one code path
-  // covers both without a separate "has this played yet" flag. Scale
-  // instead of the site's usual slide-up, on purpose — chips settling
-  // into place reads differently from a heading or a card.
-  useEffect(() => {
-    const grid = gridRef.current;
-    if (!grid) return;
-    const items = grid.querySelectorAll("[data-skill]");
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(items, { opacity: 1, scale: 1 });
-      return;
-    }
-
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        items,
-        { opacity: 0, scale: 0.9 },
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.4,
-          ease: "power2.out",
-          stagger: 0.02,
-          scrollTrigger: {
-            trigger: grid,
-            start: "top 96%",
-            once: true,
-          },
-        }
-      );
-    }, grid);
-
-    return () => ctx.revert();
-  }, [activeCategory]);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    tlRef.current?.kill();
+    const tl = gsap.timeline({
+      defaults: { ease: "expo.inOut", duration: 1 },
+      onUpdate: () => ScrollTrigger.update(),
+      onComplete: () => ScrollTrigger.refresh(),
+    });
+    tlRef.current = tl;
+    items.forEach((item, i) => {
+      const panel = item.querySelector(".skills__panel");
+      const chips = item.querySelectorAll(".skills__chips li");
+      if (i === open) {
+        tl.to(panel, { height: "auto" }, 0);
+        tl.fromTo(chips, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.035 }, 0.25);
+      } else if (panel.offsetHeight > 0) {
+        tl.to(chips, { opacity: 0, duration: 0.3, ease: "power2.out" }, 0);
+        tl.to(panel, { height: 0 }, 0);
+      }
+    });
+  }, [open]);
 
   return (
-    <section id="skills" className="py-28 px-6 md:px-12 relative">
-      <div className="container">
-        <p className="index-number mb-3">TOOLKIT</p>
-        <RevealText as="h2" text="Stack & tools" className="font-display text-3xl md:text-4xl mb-10 block" />
-
-        <div
-          ref={filterListRef}
-          className="relative flex flex-wrap gap-2 mb-10 font-mono text-xs"
-        >
-          <span
-            ref={filterIndicatorRef}
-            aria-hidden="true"
-            className="absolute left-0 top-0 rounded-full bg-primary opacity-0"
-            style={{ willChange: "transform, width, height" }}
-          />
-          {categories.map((category) => (
-            <button
-              key={category}
-              ref={(el) => {
-                filterItemRefs.current[category] = el;
-              }}
-              onClick={() => setActiveCategory(category)}
-              className={cn(
-                "relative px-4 py-2 rounded-full border capitalize transition-colors duration-300",
-                activeCategory === category
-                  ? "text-primary-foreground border-primary"
-                  : "border-border text-muted-foreground hover:border-primary hover:text-primary"
-              )}
-            >
-              {category}
-            </button>
-          ))}
+    <section id="skills" ref={ref} className="skills">
+      <div className="skills__inner">
+        <div className="skills__intro">
+          <h2 className="section-title">
+            <span className="line-mask"><span>Stack &amp;</span></span>
+            <span className="line-mask"><span>Tools</span></span>
+          </h2>
+          <p>(03) Toolkit — what I reach for to ship fast, accessible, long-lasting interfaces. Open a group to see the details.</p>
         </div>
 
-        <div ref={gridRef} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {filteredSkills.map((skill) => (
-            <div
-              key={skill.name}
-              data-skill
-              className="rounded-xl border border-border bg-card px-4 py-4 text-center card-hover opacity-0"
-            >
-              <span className="font-mono text-sm">{skill.name}</span>
-            </div>
-          ))}
+        <div className="skills__list">
+          {groups.map((g, i) => {
+            const isOpen = open === i;
+            return (
+              <div key={g.name} className={`skills__item${isOpen ? " is-open" : ""}`}>
+                <h3 style={{ margin: 0, overflow: "hidden", paddingBottom: "0.08em" }}>
+                  <button
+                    type="button"
+                    className="skills__trigger"
+                    aria-expanded={isOpen}
+                    aria-controls={`skills-panel-${i}`}
+                    onClick={() => setOpen(isOpen ? -1 : i)}
+                  >
+                    <span className="skills__name">{g.name}</span>
+                    <span className="skills__plus" aria-hidden="true" />
+                  </button>
+                </h3>
+                <span className="skills__count kicker">({String(g.items.length).padStart(2, "0")})</span>
+                <div className="skills__rule" />
+                <div id={`skills-panel-${i}`} className="skills__panel" role="region">
+                  <div className="skills__content">
+                    <ul className="skills__chips">
+                      {g.items.map((s) => (
+                        <li key={s}>{s}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

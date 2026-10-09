@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
-import { cn } from "@/lib/utils";
 import { useActiveSection } from "@/hooks/use-active-section";
-import { ThemeToggle } from "./ThemeToggle";
+import { useBerlinTime } from "@/hooks/use-berlin-time";
 
 const navItems = [
   { id: "hero", label: "Home" },
@@ -13,161 +12,163 @@ const navItems = [
   { id: "projects", label: "Work" },
   { id: "contact", label: "Contact" },
 ];
-
-// Hoisted so it's the same array reference on every render. Passing a
-// fresh `navItems.map(...)` inline here made useActiveSection's effect
-// dependency change on every render (since setActive itself triggers
-// a re-render), tearing down and rebuilding the IntersectionObserver
-// on every single active-section change — the flicker/lag the nav
-// highlight showed.
 const navIds = navItems.map((n) => n.id);
 
-export const Navbar = () => {
+const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/**
+ * Light top bar + full-screen dark menu. The bar tucks away when you scroll
+ * down and slides back on the first upward scroll; the MENU pill fills with
+ * cream on hover and its glyph rotates into a cross.
+ */
+export const Navbar = ({ ready }) => {
   const active = useActiveSection(navIds);
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const navListRef = useRef(null);
-  const indicatorRef = useRef(null);
-  const itemRefs = useRef({});
+  const time = useBerlinTime();
+  const [open, setOpen] = useState(false);
+  const navRef = useRef(null);
+  const panelRef = useRef(null);
+  const tlRef = useRef(null);
+  const hiddenRef = useRef(false);
 
-  // Morphing nav pill: one shared indicator slides + resizes to sit
-  // behind whichever link is active, instead of each link owning its
-  // own underline. Recomputed on every active change and on resize,
-  // since the pill's target rect depends on live layout.
+  // entrance after the intro
   useEffect(() => {
-    const list = navListRef.current;
-    const indicator = indicatorRef.current;
-    const activeEl = itemRefs.current[active];
-    if (!list || !indicator || !activeEl) return;
+    if (!ready || reduced()) return;
+    gsap.fromTo(navRef.current, { yPercent: -100 }, { yPercent: 0, duration: 1, ease: "power3.out" });
+  }, [ready]);
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    const position = (animate) => {
-      const listRect = list.getBoundingClientRect();
-      const activeRect = activeEl.getBoundingClientRect();
-      const x = activeRect.left - listRect.left;
-      const width = activeRect.width;
-
-      if (!animate || reduced) {
-        gsap.set(indicator, { x, width, opacity: 1 });
-        return;
+  // hide on scroll down, reveal on scroll up
+  useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const down = y > last;
+      if (Math.abs(y - last) < 6) return;
+      if (down && y > 240 && !hiddenRef.current && !open) {
+        hiddenRef.current = true;
+        gsap.to(navRef.current, { yPercent: -100, duration: 0.6, ease: "power3.inOut", overwrite: true });
+      } else if (!down && hiddenRef.current) {
+        hiddenRef.current = false;
+        gsap.to(navRef.current, { yPercent: 0, duration: 0.6, ease: "power3.out", overwrite: true });
       }
-      gsap.to(indicator, { x, width, opacity: 1, duration: 0.5, ease: "power3.out" });
+      last = y;
     };
-
-    position(true);
-    const onResize = () => position(false);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [active]);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [open]);
 
-  // Lock background scroll while the mobile menu is open.
+  // open/close timeline for the full-screen panel
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
+    const panel = panelRef.current;
+    const links = panel.querySelectorAll(".menu-link__label");
+    const aside = panel.querySelectorAll(".menu-aside > *");
+    gsap.set(panel, { yPercent: -100 });
+    const tl = gsap.timeline({ paused: true, defaults: { ease: "power4.inOut" } });
+    tl.set(panel, { visibility: "visible" })
+      .to(panel, { yPercent: 0, duration: 0.9 })
+      .fromTo(links, { yPercent: 110 }, { yPercent: 0, duration: 0.9, ease: "power4.out", stagger: 0.06 }, 0.35)
+      .fromTo(aside, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out", stagger: 0.08 }, 0.6);
+    tl.eventCallback("onReverseComplete", () => gsap.set(panel, { visibility: "hidden" }));
+    tlRef.current = tl;
     return () => {
-      document.body.style.overflow = "";
+      tl.kill();
+      gsap.set(panel.querySelectorAll("*"), { clearProps: "transform,opacity" });
+      gsap.set(panel, { clearProps: "transform,visibility" });
     };
-  }, [menuOpen]);
-
-  // Close the menu automatically if the viewport grows past mobile
-  // (e.g. rotating a tablet, or resizing a browser window).
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    const handle = () => setMenuOpen(false);
-    mq.addEventListener("change", handle);
-    return () => mq.removeEventListener("change", handle);
   }, []);
+
+  useEffect(() => {
+    const tl = tlRef.current;
+    if (!tl) return;
+    document.documentElement.classList.toggle("is-intro", open);
+    open ? tl.timeScale(1).play() : tl.timeScale(1.4).reverse();
+    return () => document.documentElement.classList.remove("is-intro");
+  }, [open]);
+
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const go = () => setOpen(false);
 
   return (
-    <header
-      data-scrolled={scrolled || menuOpen}
-      className="nav-surface fixed top-0 inset-x-0 z-50"
-    >
-      <nav className="container h-16 flex items-center justify-between px-6 md:px-12">
-        <a href="#hero" className="font-display text-lg shrink-0">
-          <span className="md:hidden">LI</span>
-          <span className="hidden md:inline">Luis Iglesias</span>
-        </a>
-
-        {/* desktop nav */}
-        <div
-          ref={navListRef}
-          className="relative hidden md:flex items-center gap-8 font-mono text-xs tracking-[0.08em]"
-        >
-          <span
-            ref={indicatorRef}
-            aria-hidden="true"
-            className="absolute left-0 -bottom-0.5 h-px bg-primary opacity-0"
-            style={{ willChange: "transform, width" }}
-          />
-          {navItems.map((item) => (
-            <a
-              key={item.id}
-              ref={(el) => {
-                itemRefs.current[item.id] = el;
-              }}
-              href={`#${item.id}`}
-              aria-current={active === item.id ? "true" : undefined}
-              className={cn(
-                "relative pb-1 transition-colors duration-300",
-                active === item.id
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {item.label}
-            </a>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
+    <div className="site-nav-layer">
+      <header ref={navRef} className="site-nav">
+        <div className="site-nav__bar">
+          <a href="#hero" className="site-nav__brand" aria-label="Luis Iglesias — home">
+            <span className="site-nav__mark">LI</span>
+            <span className="site-nav__brand-copy">
+              <strong>Luis Iglesias</strong>
+              <span>Web Developer</span>
+            </span>
+          </a>
+          <div className="site-nav__status kicker">
+            <i aria-hidden="true" />
+            <span>Hamburg {time} — open for projects</span>
+          </div>
           <button
             type="button"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            className="md:hidden flex items-center justify-center h-9 w-9 -mr-2 text-foreground/80 hover:text-primary transition-colors"
+            className="pill site-nav__menu-button"
+            aria-expanded={open}
+            aria-controls="site-menu"
+            onClick={() => setOpen((o) => !o)}
           >
-            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+            <span>{open ? "Close" : "Menu"}</span>
+            <span className="glyph" aria-hidden="true"><i /><i /></span>
           </button>
         </div>
-      </nav>
 
-      {/* mobile menu overlay */}
-      <div
-        className={cn(
-          "md:hidden fixed inset-0 top-16 z-40 bg-background transition-opacity duration-300",
-          menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        )}
-      >
-        <ul className="flex flex-col px-6 pt-4">
-          {navItems.map((item, i) => (
-            <li key={item.id} className="border-b border-border">
-              <a
-                href={`#${item.id}`}
-                onClick={() => setMenuOpen(false)}
-                className={cn(
-                  "flex items-center gap-4 py-5 font-display text-3xl transition-colors",
-                  active === item.id ? "text-primary" : "text-foreground"
-                )}
-              >
-                <span className="font-mono text-xs text-muted-foreground">
-                  0{i + 1}
-                </span>
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </header>
+        <div ref={panelRef} id="site-menu" className="menu-panel" role="dialog" aria-label="Site menu" aria-hidden={!open}>
+          <div className="menu-panel__head">
+            <a href="#hero" className="site-nav__brand" onClick={go} tabIndex={open ? 0 : -1}>
+              <span className="site-nav__mark">LI</span>
+              <span className="site-nav__brand-copy"><strong>Luis Iglesias</strong></span>
+            </a>
+            <button type="button" className="pill pill--light" onClick={go} tabIndex={open ? 0 : -1}>
+              <span>Close</span>
+              <span className="glyph" aria-hidden="true"><i /><i /></span>
+            </button>
+          </div>
+          <div className="menu-panel__body">
+            <ul className="menu-list">
+              {navItems.map((item, i) => (
+                <li key={item.id}>
+                  <a
+                    href={`#${item.id}`}
+                    onClick={go}
+                    tabIndex={open ? 0 : -1}
+                    className={`menu-link${active === item.id ? " is-active" : ""}`}
+                  >
+                    <span className="menu-link__idx">0{i + 1}</span>
+                    <span className="menu-link__label">{item.label}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <div className="menu-aside">
+              <div>
+                <span className="kicker">Say hello</span>
+                <a href="mailto:lluis.igl3sias@gmail.com">lluis.igl3sias@gmail.com</a>
+              </div>
+              <div>
+                <span className="kicker">Based in</span>
+                Hamburg / Winsen (Luhe), Germany — working remote
+              </div>
+              <div>
+                <span className="kicker">Elsewhere</span>
+                <a href="https://www.linkedin.com/in/luis-iglesias-ab8068243/" target="_blank" rel="noreferrer">
+                  LinkedIn <ArrowUpRight size={14} style={{ display: "inline" }} />
+                </a>
+                <br />
+                <a href="https://www.instagram.com/lluis.iglesias" target="_blank" rel="noreferrer">
+                  Instagram <ArrowUpRight size={14} style={{ display: "inline" }} />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+    </div>
   );
 };

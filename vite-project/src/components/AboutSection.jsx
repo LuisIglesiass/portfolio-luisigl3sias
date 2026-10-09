@@ -1,132 +1,145 @@
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { RevealText } from "./RevealText";
-import { useMagnetic } from "@/hooks/use-magnetic";
+import { useRef, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
+import { useGsap, gsap } from "@/hooks/use-gsap";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const focusAreas = [
-  "Nuxt.js",
-  "Vue.js",
-  "WordPress",
-  "Tailwind CSS",
-  "TypeScript",
-  "UX & Performance",
+const stats = [
+  { n: 11, suffix: "+", label: "side & client projects shipped and live" },
+  { n: 4, suffix: "", label: "languages — German, Spanish, English, Portuguese" },
+  { n: 3, suffix: "", label: "years of professional dev work, and counting" },
 ];
 
-const Tile = ({ className = "", children }) => (
-  <div
-    data-tile
-    className={`rounded-2xl border border-border bg-card p-6 sm:p-8 card-hover opacity-0 ${className}`}
-  >
-    {children}
-  </div>
-);
-
 export const AboutSection = () => {
-  const gridRef = useRef(null);
-  const magneticPrimary = useMagnetic(0.3);
-  const magneticSecondary = useMagnetic(0.3);
+  const ref = useRef(null);
+  const [photoOk, setPhotoOk] = useState(true);
 
-  // The bento tiles sit at different heights (the "4 languages" tile is
-  // a full row lower than the others), so revealing each one off its
-  // own individual scroll position — the previous approach — made the
-  // lower tiles visibly lag behind their neighbors. Trigger the whole
-  // grid together instead, the moment it enters view, with a short
-  // stagger so it still reads as a cascade rather than a single pop-in.
-  useEffect(() => {
-    const grid = gridRef.current;
-    if (!grid) return;
-    const tiles = grid.querySelectorAll("[data-tile]");
+  useGsap(ref, () => {
+    const root = ref.current;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(tiles, { opacity: 1, y: 0 });
-      return;
-    }
+    // title lines slide up out of their masks
+    gsap.set(root.querySelectorAll(".about__title .line-mask > span"), { yPercent: 108 });
+    gsap.to(root.querySelectorAll(".about__title .line-mask > span"), {
+      yPercent: 0,
+      duration: 1.2,
+      ease: "power4.out",
+      stagger: 0.1,
+      scrollTrigger: { trigger: ".about__title", start: "top 82%", once: true },
+    });
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        tiles,
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power3.out",
-          stagger: 0.08,
-          scrollTrigger: {
-            trigger: grid,
-            start: "top 96%",
-            once: true,
-          },
-        }
-      );
-    }, grid);
+    gsap.fromTo(
+      root.querySelectorAll("[data-rise]"),
+      { opacity: 0, y: 28 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.out",
+        stagger: 0.1,
+        scrollTrigger: { trigger: ".about__intro", start: "top 88%", once: true },
+      }
+    );
 
-    return () => ctx.revert();
-  }, []);
+    // portrait: curtain wipe up + counter-parallax inside the frame
+    gsap.fromTo(
+      ".about__portrait",
+      { clipPath: "inset(100% 0% 0% 0%)" },
+      {
+        clipPath: "inset(0% 0% 0% 0%)",
+        duration: 1.5,
+        ease: "power4.inOut",
+        scrollTrigger: { trigger: ".about__portrait", start: "top 85%", once: true },
+      }
+    );
+    gsap.fromTo(
+      ".about__media",
+      { scale: 1.1 },
+      {
+        scale: 1,
+        ease: "none",
+        scrollTrigger: { trigger: ".about__portrait", start: "top bottom", end: "bottom top", scrub: true },
+      }
+    );
+
+    // stats: rule draws, numbers count up
+    gsap.fromTo(
+      ".about__stats",
+      { clipPath: "inset(0 100% 0 0)" },
+      { clipPath: "inset(0 0% 0 0)", duration: 1.4, ease: "power3.inOut", scrollTrigger: { trigger: ".about__stats", start: "top 90%", once: true } }
+    );
+    root.querySelectorAll("[data-count]").forEach((el) => {
+      const target = Number(el.dataset.count);
+      const o = { v: 0 };
+      gsap.to(o, {
+        v: target,
+        duration: 1.6,
+        ease: "power2.out",
+        onUpdate: () => (el.firstChild.textContent = String(Math.round(o.v))),
+        scrollTrigger: { trigger: ".about__stats", start: "top 90%", once: true },
+      });
+    });
+  });
 
   return (
-    <section id="about" className="py-28 px-6 md:px-12 relative">
-      <div className="container">
-        <p className="index-number mb-3">WHO I AM</p>
-        <RevealText as="h2" text="About" className="font-display text-3xl md:text-4xl mb-12 block" />
-
-        <div ref={gridRef} className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          <Tile className="lg:col-span-7 lg:row-span-2 flex flex-col justify-between">
-            <div className="space-y-5">
-              <p className="font-display text-2xl sm:text-3xl leading-snug">
-                I turn interfaces into things people actually enjoy using —
-                fast, accessible, built to last.
-              </p>
-              <p className="font-mono text-sm text-muted-foreground leading-relaxed">
-                Trained as a Fachinformatiker für Anwendungsentwicklung at
-                Kühne+Nagel, then freelanced through Re:frame e.V. before
-                joining FLOW4 Webdesign full-time, where I build digital
-                platforms with Nuxt and Vue. Alongside that I run{" "}
-                <span className="text-foreground">Iglesias Web Agency</span>,
-                my own studio for businesses that want a site that doesn't
-                look like everyone else's.
-              </p>
+    <section id="about" ref={ref} className="about">
+      <div className="about__inner">
+        <div className="about__layout">
+          <div className="about__copy">
+            <div className="about__kicker kicker">
+              <span>(01) What I do</span>
+              <span>Hamburg, DE</span>
             </div>
-            <div className="flex flex-wrap gap-4 pt-8">
-              <a ref={magneticPrimary} href="#contact" className="btn-solid">
-                Get in touch
-              </a>
-              <a ref={magneticSecondary} href="/CVLuisIglesias.pdf" download className="btn-outline">
-                Download CV
-              </a>
-            </div>
-          </Tile>
-
-          <Tile className="lg:col-span-5">
-            <p className="font-display text-5xl text-primary">11+</p>
-            <p className="font-mono text-xs text-muted-foreground mt-2">
-              side &amp; client projects shipped and live
+            <h2 className="about__title">
+              <span className="line-mask"><span>I build fast,</span></span>
+              <span className="line-mask"><span>considered websites</span></span>
+              <span className="line-mask"><span className="muted">that people enjoy</span></span>
+              <span className="line-mask"><span className="muted">actually using.</span></span>
+            </h2>
+            <p className="about__intro" data-rise>
+              Trained as a <strong>Fachinformatiker für Anwendungsentwicklung</strong> at Kühne+Nagel, then freelancing
+              through Re:frame e.V. before joining <strong>FLOW4 Webdesign</strong> full-time to build platforms with
+              Nuxt and Vue.
+              <span style={{ display: "block", marginTop: "1.2em" }}>
+                Alongside that I run <strong>Iglesias Web Agency</strong> — my own studio for businesses that want a
+                site that doesn't look like everyone else's.
+              </span>
             </p>
-          </Tile>
-
-          <Tile className="lg:col-span-5">
-            <p className="font-display text-5xl text-primary">4</p>
-            <p className="font-mono text-xs text-muted-foreground mt-2">
-              languages — German, Spanish, English, Portuguese
-            </p>
-          </Tile>
-
-          <Tile className="lg:col-span-12">
-            <p className="index-number mb-4">CURRENT FOCUS</p>
-            <div className="flex flex-wrap gap-3">
-              {focusAreas.map((area) => (
-                <span
-                  key={area}
-                  className="font-mono text-xs px-4 py-2 rounded-full border border-border text-foreground/80 hover:border-primary hover:text-primary transition-colors duration-300"
-                >
-                  {area}
-                </span>
-              ))}
+            <div className="about__actions" data-rise>
+              <a href="#contact" className="pill">
+                <span>Get in touch</span>
+                <span className="pill__icon"><ArrowUpRight size={15} /></span>
+              </a>
+              <a href="/CVLuisIglesias.pdf" download className="pill pill--ghost">
+                <span>Download CV</span>
+              </a>
             </div>
-          </Tile>
+          </div>
+
+          <figure className="about__portrait">
+            <div className="about__media">
+              {photoOk ? (
+                <img src="/luis-iglesias.webp" alt="Portrait of Luis Iglesias" loading="lazy" onError={() => setPhotoOk(false)} />
+              ) : (
+                <div className="about__monogram" aria-hidden="true">
+                  L<b>I</b>
+                </div>
+              )}
+            </div>
+            <figcaption className="kicker">
+              <span>Luis Iglesias</span>
+              <span>Hamburg, DE — Remote</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div className="about__stats">
+          {stats.map((s) => (
+            <div key={s.label} className="about__stat">
+              <span className="about__stat-num">
+                <span data-count={s.n}>0</span>
+                {s.suffix && <sup>{s.suffix}</sup>}
+              </span>
+              <p>{s.label}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
