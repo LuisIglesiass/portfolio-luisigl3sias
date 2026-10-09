@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { useBerlinTime } from "@/hooks/use-berlin-time";
+import { lockScroll, unlockScroll } from "@/lib/smoothScroll";
 
 const navItems = [
   { id: "hero", label: "Home" },
@@ -79,9 +80,12 @@ export const Navbar = ({ ready }) => {
   useEffect(() => {
     const tl = tlRef.current;
     if (!tl) return;
-    document.documentElement.classList.toggle("is-intro", open);
-    open ? tl.timeScale(1).play() : tl.timeScale(1.4).reverse();
-    return () => document.documentElement.classList.remove("is-intro");
+    if (open) {
+      lockScroll();
+      tl.timeScale(1).play();
+      return unlockScroll;
+    }
+    tl.timeScale(1.4).reverse();
   }, [open]);
 
   useEffect(() => {
@@ -119,7 +123,7 @@ export const Navbar = ({ ready }) => {
           </button>
         </div>
 
-        <div ref={panelRef} id="site-menu" className="menu-panel" role="dialog" aria-label="Site menu" aria-hidden={!open}>
+        <div ref={panelRef} id="site-menu" className="menu-panel" data-scroll-ok data-lenis-prevent role="dialog" aria-label="Site menu" aria-hidden={!open}>
           <div className="menu-panel__head">
             <a href="#hero" className="site-nav__brand" onClick={go} tabIndex={open ? 0 : -1}>
               <span className="site-nav__mark">LI</span>

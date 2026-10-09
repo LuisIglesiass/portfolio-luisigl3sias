@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { ArrowUpRight } from "lucide-react";
-import { useGsap, gsap } from "@/hooks/use-gsap";
+import { useGsap, gsap, ScrollTrigger } from "@/hooks/use-gsap";
 import { projects, FEATURED } from "@/data/projects";
 
 const featured = projects.slice(0, FEATURED);
@@ -38,73 +38,78 @@ export const ProjectsSection = () => {
     mm.add("(min-width: 900px)", () => {
       const n = featured.length;
       const turnover = root.querySelector(".works-turnover");
+      const title = root.querySelector(".works-turnover__title");
       const inner = root.querySelector(".works-inner");
       const bar = root.querySelector(".works-progress i");
       const counter = root.querySelector("[data-current]");
       const slides = gsap.utils.toArray(".works-slide", root);
+      const copyOf = (slide) =>
+        slide.querySelectorAll(".works-card-heading, .works-card-description, .works-card-links, .works-card-stack");
+      const imgOf = (slide) => slide.querySelector(".works-art__frame img");
+      const targets = [turnover, title, inner, bar, ...slides, ...slides.flatMap((sl) => [imgOf(sl), ...copyOf(sl)])];
 
-      const intro = 1.1; // dark "WORKS." panel lifts away
-      const dwell = 0.5; // each project holds briefly
-      const move = 1.2; // wipe from one project to the next
-      const step = move + dwell;
-      const lead = intro * 0.45; // first dwell is short: the lift already shows motion
-      const total = intro + lead + (n - 1) * step;
-      const first = slides[0];
-
-      // every slide after the first waits below, fully clipped
+      // Stage 0 = dark "WORKS." panel, stage k = project k. Scroll only decides
+      // WHICH stage we're on; the transition itself is a timed tween, so it
+      // plays at one calm speed no matter how hard the wheel is flicked.
       gsap.set(slides.slice(1), { clipPath: "inset(100% 0% 0% 0%)" });
+      gsap.set(inner, { opacity: 0, y: 40 });
+      gsap.set(slides.flatMap(copyOf), { opacity: 0, y: 28 });
+      gsap.set(bar, { scaleX: 0 });
 
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: root.querySelector(".works-pin"),
-          start: "top top",
-          end: () => "+=" + window.innerHeight * total * 0.5,
-          pin: true,
-          scrub: true, // Lenis already smooths the wheel; extra scrub lag felt rubbery
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onUpdate: () => {
-            const t = tl.time() - intro - lead - move * 0.5;
-            const i = t < 0 ? 0 : Math.min(n - 1, Math.floor(t / step) + 1);
-            counter.textContent = pad(i + 1);
-          },
+      let stage = -1;
+      const go = (next, instant = false) => {
+        const prev = stage;
+        stage = next;
+        const k = instant ? 0 : 1;
+        const open = next >= 1;
+        const cur = next - 1;
+
+        gsap.to(turnover, { yPercent: open ? -101 : 0, duration: 1.3 * k, ease: "expo.inOut", overwrite: "auto" });
+        gsap.to(title, { yPercent: open ? 24 : 0, duration: 1.3 * k, ease: "expo.inOut", overwrite: "auto" });
+        gsap.to(inner, { opacity: open ? 1 : 0, y: open ? 0 : 40, duration: 0.9 * k, delay: open ? 0.45 * k : 0, ease: "power3.out", overwrite: "auto" });
+        gsap.to(bar, { scaleX: Math.max(0, cur) / (n - 1), duration: 1 * k, ease: "power3.inOut", overwrite: "auto" });
+        counter.textContent = pad(Math.max(0, cur) + 1);
+
+        slides.forEach((slide, j) => {
+          if (j > 0) {
+            gsap.to(slide, { clipPath: cur >= j ? "inset(0% 0% 0% 0%)" : "inset(100% 0% 0% 0%)", duration: 1.2 * k, ease: "expo.inOut", overwrite: "auto" });
+          }
+          // slides already covered drift up a touch; gives the wipe some depth
+          gsap.to(slide, { yPercent: cur > j ? -5 : 0, duration: 1.2 * k, ease: "expo.inOut" });
+
+          const copy = copyOf(slide);
+          const img = imgOf(slide);
+          if (j === cur && j !== prev - 1) {
+            gsap.fromTo(img, { yPercent: 10, scale: 1.07 }, { yPercent: 0, scale: 1, duration: 1.6 * k, ease: "expo.out", overwrite: "auto", delay: 0.2 * k });
+            gsap.to(copy, { opacity: 1, y: 0, duration: 1 * k, ease: "power3.out", stagger: 0.07, delay: (open && prev < 1 ? 0.7 : 0.35) * k, overwrite: "auto" });
+          } else if (j > cur) {
+            gsap.to(copy, { opacity: 0, y: 28, duration: 0.5 * k, ease: "power2.in", overwrite: "auto" });
+          }
+        });
+      };
+
+      const H = 0.08; // hysteresis: don't flip stages right on a boundary
+      ScrollTrigger.create({
+        trigger: root.querySelector(".works-pin"),
+        start: "top top",
+        end: () => "+=" + window.innerHeight * (n + 1) * 0.7,
+        pin: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onRefresh: (self) => go(Math.min(n, Math.floor(self.progress * (n + 1))), true),
+        onUpdate: (self) => {
+          const raw = self.progress * (n + 1);
+          let next = stage;
+          if (raw >= stage + 1 + H) next = Math.min(n, Math.floor(raw - H));
+          else if (raw < stage - H) next = Math.max(0, Math.floor(raw + H));
+          if (next !== stage) go(next);
         },
       });
 
-      // Lift: the panel rises while its giant title drifts slower (parallax) and
-      // the first project assembles underneath — something is always moving, so
-      // the hand-off to the gallery never feels like it stalls.
-      tl.to(turnover, { yPercent: -101, duration: intro, ease: "power2.inOut" }, 0);
-      tl.to(".works-turnover__title", { yPercent: 38, duration: intro, ease: "power2.inOut" }, 0);
-      tl.fromTo(inner, { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: intro * 0.7, ease: "power2.out" }, intro * 0.1);
-      tl.fromTo(
-        first.querySelector(".works-art__frame img"),
-        { yPercent: 12, scale: 1.06 },
-        { yPercent: 0, scale: 1, duration: intro, ease: "power2.out" },
-        intro * 0.15
-      );
-      tl.fromTo(
-        first.querySelectorAll(".works-card-heading, .works-card-description, .works-card-links, .works-card-stack"),
-        { y: 36, opacity: 0 },
-        { y: 0, opacity: 1, duration: intro * 0.7, ease: "power2.out", stagger: 0.06 },
-        intro * 0.3
-      );
-
-      slides.slice(1).forEach((slide, k) => {
-        const at = intro + lead + k * step;
-        const prev = slides[k];
-        const img = slide.querySelector(".works-art__frame img");
-        const copy = slide.querySelectorAll(".works-card-heading, .works-card-description, .works-card-links, .works-card-stack");
-        tl.to(slide, { clipPath: "inset(0% 0% 0% 0%)", duration: move, ease: "power2.inOut" }, at);
-        // outgoing slide drifts up slightly, incoming settles — gives the wipe depth
-        tl.to(prev, { yPercent: -6, duration: move, ease: "power2.inOut" }, at);
-        tl.fromTo(img, { yPercent: 12, scale: 1.05 }, { yPercent: 0, scale: 1, duration: move, ease: "power2.out" }, at);
-        tl.fromTo(copy, { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: move * 0.8, ease: "power2.out", stagger: 0.05 }, at + move * 0.2);
-      });
-
-      tl.to(bar, { scaleX: 1, duration: total - intro }, intro);
-      tl.set({}, {}, total); // trailing dwell on the last project
+      return () => {
+        gsap.killTweensOf(targets);
+        gsap.set(targets, { clearProps: "transform,clipPath,opacity" });
+      };
     });
 
     // reveal on mobile where nothing is pinned

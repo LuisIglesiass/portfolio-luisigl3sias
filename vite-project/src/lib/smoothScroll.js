@@ -5,6 +5,47 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 let lenis = null;
+let lockCount = 0;
+
+const SCROLL_KEYS = new Set([" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"]);
+// Allow the open menu panel to scroll internally on short screens.
+const insideScrollable = (t) => t instanceof Element && t.closest("[data-scroll-ok]");
+const block = (e) => {
+  if (insideScrollable(e.target)) return;
+  if (e.type === "keydown") {
+    if (!SCROLL_KEYS.has(e.key)) return;
+    const t = e.target;
+    if (t instanceof Element && t.closest("input, textarea, select")) return;
+    // Space/Enter on a focused button or link must still activate it.
+    if (e.key === " " && t instanceof Element && t.closest("button, a")) return;
+  }
+  e.preventDefault();
+};
+const EVENTS = ["wheel", "touchmove", "keydown"];
+
+const applyLock = () => {
+  const locked = lockCount > 0;
+  EVENTS.forEach((ev) => {
+    window.removeEventListener(ev, block);
+    if (locked) window.addEventListener(ev, block, { passive: false });
+  });
+  if (lenis) (locked ? lenis.stop() : lenis.start());
+};
+
+/**
+ * Freeze page scroll WITHOUT touching `overflow`. Toggling overflow makes the
+ * scrollbar vanish and the whole layout jump sideways by its width; blocking
+ * the input instead keeps the scrollbar (and every pixel of layout) still.
+ * Reference-counted so the intro and the menu can't unlock each other.
+ */
+export const lockScroll = () => {
+  lockCount++;
+  applyLock();
+};
+export const unlockScroll = () => {
+  lockCount = Math.max(0, lockCount - 1);
+  applyLock();
+};
 
 /**
  * Site-wide inertia scrolling (Lenis), synced to GSAP's ticker so
@@ -25,6 +66,7 @@ export const initSmoothScroll = () => {
     easing: (t) => 1 - Math.pow(1 - t, 3),
   });
 
+  if (lockCount > 0) lenis.stop();
   const onScroll = () => ScrollTrigger.update();
   lenis.on("scroll", onScroll);
 

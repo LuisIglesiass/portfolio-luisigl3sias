@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { lockScroll, unlockScroll } from "../lib/smoothScroll";
 
 const greetings = [
   { word: "Hello", lang: "English", script: true },
@@ -40,15 +41,20 @@ export const Intro = ({ onDone }) => {
     const panel = root.querySelector(".intro__panel");
     const items = gsap.utils.toArray(".intro__greeting", root);
     const count = root.querySelector("[data-count]");
-    const html = document.documentElement;
-    html.classList.add("is-intro");
+    lockScroll();
+    let released = false;
+    const release = () => {
+      if (released) return;
+      released = true;
+      unlockScroll();
+    };
 
     const radius = Math.hypot(window.innerWidth, window.innerHeight) / 2 + 60;
     const counter = { v: 0 };
 
     const tl = gsap.timeline({
       onComplete: () => {
-        html.classList.remove("is-intro");
+        release();
         try {
           sessionStorage.setItem("intro-seen", "1");
         } catch {
@@ -85,7 +91,7 @@ export const Intro = ({ onDone }) => {
     return () => {
       root.removeEventListener("click", skip);
       tl.kill();
-      html.classList.remove("is-intro");
+      release();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

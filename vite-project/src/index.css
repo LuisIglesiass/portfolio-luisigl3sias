@@ -71,10 +71,6 @@ html.lenis body {
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
-.lenis.lenis-stopped,
-html.is-intro {
-  overflow: hidden;
-}
 
 body {
   margin: 0;
@@ -415,6 +411,7 @@ button {
 }
 .site-nav__menu-button {
   margin-left: auto;
+  min-width: 118px; /* "Menu" ↔ "Close" must not change the pill's width */
 }
 @media (min-width: 760px) {
   .site-nav__menu-button {
